@@ -13,7 +13,7 @@ const reviewer = { select: { id: true, name: true, avatarUrl: true } };
 
 const listReviews = async (where, query, include) => {
   const pagination = getPagination(query);
-  const [items, total] = await prisma.$transaction([
+  const [items, total] = await Promise.all([
     prisma.review.findMany({
       where,
       orderBy: SORTS[query.sort] || SORTS.newest,

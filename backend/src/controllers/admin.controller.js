@@ -96,7 +96,7 @@ const listUsers = async (req, res) => {
     }),
   };
 
-  const [items, total] = await prisma.$transaction([
+  const [items, total] = await Promise.all([
     prisma.user.findMany({
       where,
       orderBy: { createdAt: "desc" },

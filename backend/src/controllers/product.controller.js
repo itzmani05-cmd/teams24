@@ -36,8 +36,8 @@ const buildWhere = (query) => {
 
 const listProducts = async (query, extraWhere = {}) => {
   const pagination = getPagination(query);
-  const where = { ...buildWhere(query), ...extraWhere };
-  const [items, total] = await prisma.$transaction([
+  const where = { AND: [buildWhere(query), extraWhere] };
+  const [items, total] = await Promise.all([
     prisma.product.findMany({
       where,
       orderBy: SORTS[query.sort],

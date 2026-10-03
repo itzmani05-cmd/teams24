@@ -10,7 +10,7 @@ const buildWhere = ({ search, isActive }) => ({
 const listCategories = async (query, extraWhere = {}) => {
   const pagination = getPagination(query);
   const where = { ...buildWhere(query), ...extraWhere };
-  const [items, total] = await prisma.$transaction([
+  const [items, total] = await Promise.all([
     prisma.category.findMany({
       where,
       orderBy: { name: "asc" },

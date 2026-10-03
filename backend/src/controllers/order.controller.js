@@ -118,7 +118,7 @@ const buildAdminWhere = ({ status, paymentStatus, userId, search, from, to }) =>
 
 const listOrders = async (where, query, include) => {
   const pagination = getPagination(query);
-  const [items, total] = await prisma.$transaction([
+  const [items, total] = await Promise.all([
     prisma.order.findMany({
       where,
       orderBy: { createdAt: "desc" },

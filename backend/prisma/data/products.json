@@ -1,0 +1,296 @@
+[
+  {
+    "name": "Electronics",
+    "slug": "electronics",
+    "description": "Phones, audio and gadgets",
+    "products": [
+      {
+        "name": "Samsung Galaxy S24 5G (128GB, Onyx Black)",
+        "sku": "SAM-S24-128-BLK",
+        "brand": "Samsung",
+        "price": 74999,
+        "discountPrice": 64999,
+        "stock": 25,
+        "description": "6.2-inch Dynamic AMOLED 2X display, Exynos 2400 processor, 50MP triple camera and 4000mAh battery."
+      },
+      {
+        "name": "Apple iPhone 15 (128GB, Blue)",
+        "sku": "APL-IP15-128-BLU",
+        "brand": "Apple",
+        "price": 79900,
+        "discountPrice": 71900,
+        "stock": 18,
+        "description": "6.1-inch Super Retina XDR display, A16 Bionic chip, 48MP main camera and USB-C."
+      },
+      {
+        "name": "boAt Rockerz 450 Bluetooth Headphones",
+        "sku": "BOAT-RKZ450-BLK",
+        "brand": "boAt",
+        "price": 3990,
+        "discountPrice": 1499,
+        "stock": 60,
+        "description": "On-ear wireless headphones with 40mm drivers, up to 15 hours playback and padded ear cushions."
+      },
+      {
+        "name": "Sony WH-1000XM5 Noise Cancelling Headphones",
+        "sku": "SONY-WH1000XM5-BLK",
+        "brand": "Sony",
+        "price": 34990,
+        "discountPrice": 29990,
+        "stock": 12,
+        "description": "Industry-leading noise cancellation, 30 hours battery life and crystal clear hands-free calling."
+      },
+      {
+        "name": "Mi Power Bank 3i 20000mAh",
+        "sku": "MI-PB3I-20K-BLK",
+        "brand": "Xiaomi",
+        "price": 2199,
+        "discountPrice": 1799,
+        "stock": 80,
+        "description": "18W fast charging, dual USB output and USB-C input with 12-layer chip protection."
+      },
+      {
+        "name": "Noise ColorFit Pro 5 Smartwatch",
+        "sku": "NOISE-CFP5-BLK",
+        "brand": "Noise",
+        "price": 6999,
+        "discountPrice": 3999,
+        "stock": 4,
+        "description": "1.85-inch AMOLED display, Bluetooth calling, 100+ sports modes and 7-day battery life."
+      }
+    ]
+  },
+  {
+    "name": "Fashion",
+    "slug": "fashion",
+    "description": "Clothing and footwear for men and women",
+    "products": [
+      {
+        "name": "Levi's Men's 511 Slim Fit Jeans",
+        "sku": "LEVI-511-DBLU-32",
+        "brand": "Levi's",
+        "price": 3299,
+        "discountPrice": 2199,
+        "stock": 40,
+        "description": "Slim fit stretch denim jeans in dark blue wash. Waist size 32."
+      },
+      {
+        "name": "Allen Solly Men's Regular Fit Polo T-Shirt",
+        "sku": "AS-POLO-NAVY-M",
+        "brand": "Allen Solly",
+        "price": 1299,
+        "discountPrice": 899,
+        "stock": 55,
+        "description": "100% cotton pique polo with ribbed collar. Navy, size M."
+      },
+      {
+        "name": "Nike Revolution 7 Running Shoes",
+        "sku": "NIKE-REV7-BLK-09",
+        "brand": "Nike",
+        "price": 4195,
+        "discountPrice": 3565,
+        "stock": 20,
+        "description": "Lightweight running shoes with soft foam cushioning. Black, UK size 9."
+      },
+      {
+        "name": "Biba Women's Cotton Straight Kurta",
+        "sku": "BIBA-KRT-MAR-M",
+        "brand": "Biba",
+        "price": 1999,
+        "discountPrice": 1399,
+        "stock": 30,
+        "description": "Printed cotton straight kurta with three-quarter sleeves. Maroon, size M."
+      },
+      {
+        "name": "Fastrack Unisex Aviator Sunglasses",
+        "sku": "FT-AVI-GLD",
+        "brand": "Fastrack",
+        "price": 1499,
+        "discountPrice": null,
+        "stock": 0,
+        "description": "UV-protected aviator sunglasses with gold metal frame."
+      }
+    ]
+  },
+  {
+    "name": "Home & Kitchen",
+    "slug": "home-kitchen",
+    "description": "Cookware, appliances and home essentials",
+    "products": [
+      {
+        "name": "Prestige Svachh Pressure Cooker 5L",
+        "sku": "PRST-SVCH-5L",
+        "brand": "Prestige",
+        "price": 2895,
+        "discountPrice": 1999,
+        "stock": 35,
+        "description": "Aluminium outer-lid pressure cooker with deep lid for spillage control."
+      },
+      {
+        "name": "Philips HL7756 Mixer Grinder 750W",
+        "sku": "PHL-HL7756-750W",
+        "brand": "Philips",
+        "price": 6295,
+        "discountPrice": 3899,
+        "stock": 15,
+        "description": "750W motor with 3 stainless steel jars and 5-year warranty on motor."
+      },
+      {
+        "name": "Milton Thermosteel Flask 1L",
+        "sku": "MLT-THRM-1L-SLV",
+        "brand": "Milton",
+        "price": 1265,
+        "discountPrice": 899,
+        "stock": 70,
+        "description": "Vacuum insulated stainless steel flask, keeps drinks hot or cold for 24 hours."
+      },
+      {
+        "name": "Pigeon Non-Stick Cookware Set (3 Pieces)",
+        "sku": "PGN-NS-SET3",
+        "brand": "Pigeon",
+        "price": 2495,
+        "discountPrice": 1349,
+        "stock": 3,
+        "description": "Includes fry pan, kadai with lid and tawa. Induction and gas stove compatible."
+      },
+      {
+        "name": "Solimo Microfibre Bedsheet Set (Double)",
+        "sku": "SLM-BED-DBL-BLU",
+        "brand": "Solimo",
+        "price": 1199,
+        "discountPrice": 649,
+        "stock": 45,
+        "description": "Double bedsheet with two pillow covers, soft microfibre fabric in blue."
+      }
+    ]
+  },
+  {
+    "name": "Books",
+    "slug": "books",
+    "description": "Fiction, self-help and learning",
+    "products": [
+      {
+        "name": "Atomic Habits by James Clear",
+        "sku": "BK-ATOMIC-HABITS-PB",
+        "brand": "Penguin",
+        "price": 799,
+        "discountPrice": 499,
+        "stock": 100,
+        "description": "An easy and proven way to build good habits and break bad ones. Paperback."
+      },
+      {
+        "name": "The Psychology of Money by Morgan Housel",
+        "sku": "BK-PSY-MONEY-PB",
+        "brand": "Jaico",
+        "price": 399,
+        "discountPrice": 299,
+        "stock": 90,
+        "description": "Timeless lessons on wealth, greed and happiness. Paperback."
+      },
+      {
+        "name": "Wings of Fire by A.P.J. Abdul Kalam",
+        "sku": "BK-WINGS-FIRE-PB",
+        "brand": "Universities Press",
+        "price": 350,
+        "discountPrice": 275,
+        "stock": 65,
+        "description": "The autobiography of Dr. A.P.J. Abdul Kalam. Paperback."
+      },
+      {
+        "name": "Clean Code by Robert C. Martin",
+        "sku": "BK-CLEAN-CODE-PB",
+        "brand": "Pearson",
+        "price": 899,
+        "discountPrice": 749,
+        "stock": 2,
+        "description": "A handbook of agile software craftsmanship. Paperback."
+      }
+    ]
+  },
+  {
+    "name": "Beauty & Personal Care",
+    "slug": "beauty-personal-care",
+    "description": "Skincare, haircare and grooming",
+    "products": [
+      {
+        "name": "Mamaearth Vitamin C Face Wash 100ml",
+        "sku": "MAMA-VITC-FW-100",
+        "brand": "Mamaearth",
+        "price": 349,
+        "discountPrice": 279,
+        "stock": 120,
+        "description": "Face wash with vitamin C and turmeric for skin illumination."
+      },
+      {
+        "name": "Philips BT1232 Beard Trimmer",
+        "sku": "PHL-BT1232",
+        "brand": "Philips",
+        "price": 1395,
+        "discountPrice": 1099,
+        "stock": 28,
+        "description": "Cordless trimmer with 18 length settings and 30 minutes runtime."
+      },
+      {
+        "name": "Nivea Soft Light Moisturising Cream 100ml",
+        "sku": "NIV-SOFT-100",
+        "brand": "Nivea",
+        "price": 299,
+        "discountPrice": null,
+        "stock": 150,
+        "description": "Light moisturiser with jojoba oil and vitamin E for face, hands and body."
+      },
+      {
+        "name": "Dove Intense Repair Shampoo 650ml",
+        "sku": "DOVE-IR-SH-650",
+        "brand": "Dove",
+        "price": 699,
+        "discountPrice": 525,
+        "stock": 75,
+        "description": "Shampoo with keratin repair actives for damaged hair."
+      }
+    ]
+  },
+  {
+    "name": "Sports & Fitness",
+    "slug": "sports-fitness",
+    "description": "Gear for workouts and outdoor sports",
+    "products": [
+      {
+        "name": "Boldfit Yoga Mat 6mm",
+        "sku": "BF-YOGA-6MM-PUR",
+        "brand": "Boldfit",
+        "price": 999,
+        "discountPrice": 499,
+        "stock": 50,
+        "description": "Anti-slip EVA yoga mat with carry strap. Purple, 6mm thick."
+      },
+      {
+        "name": "Cosco Hi-Bounce Football (Size 5)",
+        "sku": "COS-FB-HB-S5",
+        "brand": "Cosco",
+        "price": 899,
+        "discountPrice": 649,
+        "stock": 40,
+        "description": "Machine-stitched rubberised football for outdoor play. Size 5."
+      },
+      {
+        "name": "SS Kashmir Willow Cricket Bat",
+        "sku": "SS-KW-BAT-SH",
+        "brand": "SS",
+        "price": 2499,
+        "discountPrice": 1899,
+        "stock": 15,
+        "description": "Kashmir willow bat with cane handle for leather and tennis ball. Short handle."
+      },
+      {
+        "name": "Kore PVC Dumbbell Set 10kg",
+        "sku": "KORE-DB-PVC-10KG",
+        "brand": "Kore",
+        "price": 1999,
+        "discountPrice": 1199,
+        "stock": 22,
+        "description": "Home gym set with PVC plates, two dumbbell rods and locks. Total 10kg."
+      }
+    ]
+  }
+]
