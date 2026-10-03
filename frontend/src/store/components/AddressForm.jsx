@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 const EMPTY = {
-  label: "Home",
   fullName: "",
   phone: "",
   addressLine1: "",
@@ -13,98 +12,63 @@ const EMPTY = {
   isDefault: false,
 };
 
-const AddressForm = ({ onSubmit, onCancel }) => {
-  const [form, setForm] = useState(EMPTY);
+const AddressForm = ({ initial, onSubmit, onCancel, submitLabel = "Save Address" }) => {
+  const [form, setForm] = useState({ ...EMPTY, ...initial, addressLine2: initial?.addressLine2 ?? "" });
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm((f) => ({ ...f, [name]: type === "checkbox" ? checked : value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(form);
-    setForm(EMPTY);
+    setSaving(true);
+    setError("");
+    try {
+      await onSubmit({
+        fullName: form.fullName,
+        phone: form.phone,
+        addressLine1: form.addressLine1,
+        addressLine2: form.addressLine2.trim() || null,
+        city: form.city,
+        state: form.state,
+        postalCode: form.postalCode,
+        country: form.country,
+        isDefault: form.isDefault,
+      });
+      if (!initial) setForm(EMPTY);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
   };
+
+  const field = (name, label, props = {}) => (
+    <div className="field">
+      <label htmlFor={`addr-${name}`}>{label}</label>
+      <input id={`addr-${name}`} className="input" name={name} value={form[name]} onChange={handleChange} {...props} />
+    </div>
+  );
 
   return (
     <form className="pt-1" onSubmit={handleSubmit}>
+      {error && <div className="alert-error">{error}</div>}
       <div className="grid gap-x-3 sm:grid-cols-2">
-        <div className="field">
-          <label htmlFor="addr-name">Full name</label>
-          <input
-            id="addr-name"
-            className="input"
-            name="fullName"
-            value={form.fullName}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="addr-phone">Phone</label>
-          <input
-            id="addr-phone"
-            className="input"
-            name="phone"
-            type="tel"
-            value={form.phone}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        {field("fullName", "Full name", { required: true, minLength: 2 })}
+        {field("phone", "Phone", { type: "tel", required: true, minLength: 5 })}
       </div>
-      <div className="field">
-        <label htmlFor="addr-line1">Address line 1</label>
-        <input
-          id="addr-line1"
-          className="input"
-          name="addressLine1"
-          value={form.addressLine1}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div className="field">
-        <label htmlFor="addr-line2">Address line 2 (optional)</label>
-        <input
-          id="addr-line2"
-          className="input"
-          name="addressLine2"
-          value={form.addressLine2}
-          onChange={handleChange}
-        />
+      {field("addressLine1", "Address line 1", { required: true, minLength: 3 })}
+      {field("addressLine2", "Address line 2 (optional)")}
+      <div className="grid gap-x-3 sm:grid-cols-2">
+        {field("city", "City", { required: true, minLength: 2 })}
+        {field("state", "State", { required: true, minLength: 2 })}
       </div>
       <div className="grid gap-x-3 sm:grid-cols-2">
-        <div className="field">
-          <label htmlFor="addr-city">City</label>
-          <input id="addr-city" className="input" name="city" value={form.city} onChange={handleChange} required />
-        </div>
-        <div className="field">
-          <label htmlFor="addr-state">State</label>
-          <input id="addr-state" className="input" name="state" value={form.state} onChange={handleChange} required />
-        </div>
-      </div>
-      <div className="grid gap-x-3 sm:grid-cols-2">
-        <div className="field">
-          <label htmlFor="addr-pin">PIN code</label>
-          <input
-            id="addr-pin"
-            className="input"
-            name="postalCode"
-            value={form.postalCode}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="field">
-          <label htmlFor="addr-label">Label</label>
-          <select id="addr-label" className="input" name="label" value={form.label} onChange={handleChange}>
-            <option>Home</option>
-            <option>Work</option>
-            <option>Other</option>
-          </select>
-        </div>
+        {field("postalCode", "PIN code", { required: true, minLength: 3 })}
+        {field("country", "Country", { required: true, minLength: 2 })}
       </div>
       <label className="mb-3 flex items-center gap-2 [&>input]:accent-primary">
         <input type="checkbox" name="isDefault" checked={form.isDefault} onChange={handleChange} />
@@ -116,8 +80,8 @@ const AddressForm = ({ onSubmit, onCancel }) => {
             Cancel
           </button>
         )}
-        <button type="submit" className="btn btn-primary">
-          Save Address
+        <button type="submit" className="btn btn-primary" disabled={saving}>
+          {saving ? "Saving..." : submitLabel}
         </button>
       </div>
     </form>

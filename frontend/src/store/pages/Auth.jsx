@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, Navigate, useLocation, useNavigate } from "react-router";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import { useShop } from "../context/ShopContext";
 import { GithubIcon, GoogleIcon } from "../components/BrandIcons";
@@ -7,21 +7,33 @@ import { GithubIcon, GoogleIcon } from "../components/BrandIcons";
 const Auth = ({ mode }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useShop();
+  const { user, login, register } = useShop();
   const isLogin = mode === "login";
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [notice, setNotice] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const redirectTo = location.state?.from || "/account/orders";
 
   const handleChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login({ email: form.email.trim(), name: form.name.trim() });
-    navigate(redirectTo, { replace: true });
+    setError("");
+    setSubmitting(true);
+    try {
+      if (isLogin) await login(form.email.trim(), form.password);
+      else await register({ name: form.name.trim(), email: form.email.trim(), password: form.password });
+      navigate(redirectTo, { replace: true });
+    } catch (err) {
+      setError(err.message);
+      setSubmitting(false);
+    }
   };
+
+  if (user && !submitting) return <Navigate to={redirectTo} replace />;
 
   const social = (provider) => setNotice(`${provider} sign-in is not connected yet.`);
 
@@ -32,10 +44,22 @@ const Auth = ({ mode }) => {
           className="no-scrollbar flex gap-6 overflow-x-auto border-b border-line [&>*]:-mb-px [&>*]:shrink-0 [&>*]:cursor-pointer [&>*]:border-b-2 [&>*]:border-transparent [&>*]:py-3.5 [&>*]:font-medium [&>*]:whitespace-nowrap [&>*]:text-muted [&>.active]:border-primary [&>.active]:text-primary mb-6 justify-center gap-0 [&>*]:flex-1 [&>*]:text-center"
           role="tablist"
         >
-          <Link to="/login" role="tab" aria-selected={isLogin} className={isLogin ? "active" : ""}>
+          <Link
+            to="/login"
+            state={location.state}
+            role="tab"
+            aria-selected={isLogin}
+            className={isLogin ? "active" : ""}
+          >
             Login
           </Link>
-          <Link to="/register" role="tab" aria-selected={!isLogin} className={!isLogin ? "active" : ""}>
+          <Link
+            to="/register"
+            state={location.state}
+            role="tab"
+            aria-selected={!isLogin}
+            className={!isLogin ? "active" : ""}
+          >
             Register
           </Link>
         </div>
@@ -43,6 +67,7 @@ const Auth = ({ mode }) => {
         <h1>{isLogin ? "Welcome Back" : "Create Account"}</h1>
         <p className="text-muted">{isLogin ? "Login to your account" : "Join Teams24 for faster checkout"}</p>
 
+        {error && <div className="alert-error">{error}</div>}
         {notice && <div className="mb-3.5 rounded-lg bg-primary-soft px-3.5 py-2.5 text-ink">{notice}</div>}
 
         <form onSubmit={handleSubmit}>
@@ -117,8 +142,8 @@ const Auth = ({ mode }) => {
               </button>
             </div>
           )}
-          <button type="submit" className="btn btn-primary w-full p-3">
-            {isLogin ? "Login" : "Create Account"}
+          <button type="submit" className="btn btn-primary w-full p-3" disabled={submitting}>
+            {submitting ? "Please wait..." : isLogin ? "Login" : "Create Account"}
           </button>
         </form>
 

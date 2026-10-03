@@ -63,14 +63,14 @@ const App = () => (
       <Route path="product/:slug" element={<ProductDetail />} />
       <Route path="cart" element={<Cart />} />
       <Route path="checkout" element={<Checkout />} />
-      <Route path="order-success/:orderNumber" element={<OrderSuccess />} />
+      <Route path="order-success/:orderId" element={<OrderSuccess />} />
       <Route path="login" element={<Auth key="login" mode="login" />} />
       <Route path="register" element={<Auth key="register" mode="register" />} />
       <Route path="account" element={<AccountLayout />}>
         <Route index element={<Navigate to="orders" replace />} />
         <Route path="profile" element={<Profile />} />
         <Route path="orders" element={<MyOrders />} />
-        <Route path="orders/:orderNumber" element={<OrderDetails />} />
+        <Route path="orders/:orderId" element={<OrderDetails />} />
         <Route path="addresses" element={<Addresses />} />
         <Route path="wishlist" element={<Wishlist />} />
         <Route path="settings" element={<AccountSettings />} />

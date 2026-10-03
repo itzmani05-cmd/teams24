@@ -1,5 +1,5 @@
 import { formatMoney } from "../../utils/format";
-import { discountPercent, sellingPrice } from "../data/catalog";
+import { discountPercent, sellingPrice } from "../utils/pricing";
 
 const whole = (value) => formatMoney(value).replace(/\.00$/, "");
 

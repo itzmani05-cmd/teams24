@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Clock } from "lucide-react";
 import { useShop } from "../context/ShopContext";
-import { discountPercent } from "../data/catalog";
+import { discountPercent } from "../utils/pricing";
 import Price from "./Price";
 import Rating from "./Rating";
 
@@ -50,8 +50,8 @@ const DealOfTheDay = ({ product }) => {
   const [added, setAdded] = useState(false);
   const stockLeft = Math.min(product.stock, 99);
 
-  const add = () => {
-    addToCart(product.id);
+  const add = async () => {
+    if (!(await addToCart(product.id))) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
   };

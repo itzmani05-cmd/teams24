@@ -3,9 +3,7 @@ const currency = new Intl.NumberFormat("en-IN", { style: "currency", currency: "
 export const formatMoney = (value) => currency.format(Number(value || 0));
 
 export const formatDate = (value) =>
-  value
-    ? new Date(value).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
-    : "-";
+  value ? new Date(value).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "-";
 
 export const formatDateTime = (value) =>
   value

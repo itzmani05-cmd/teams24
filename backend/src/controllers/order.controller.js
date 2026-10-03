@@ -133,7 +133,13 @@ const listOrders = async (where, query, include) => {
 
 const listMine = async (req, res) => {
   const where = { userId: req.user.id, ...(req.query.status && { orderStatus: req.query.status }) };
-  const data = await listOrders(where, req.query, { _count: { select: { items: true } } });
+  const data = await listOrders(where, req.query, {
+    _count: { select: { items: true } },
+    items: {
+      take: 2,
+      select: { id: true, productName: true, quantity: true, product: { select: { thumbnailUrl: true } } },
+    },
+  });
   res.json({ success: true, data });
 };
 

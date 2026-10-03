@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import { SlidersHorizontal, Star, X } from "lucide-react";
-import { brands, categories, discountPercent, priceBounds, products, sellingPrice } from "../data/catalog";
+import { useCatalog } from "../context/CatalogContext";
+import { discountPercent, sellingPrice } from "../utils/pricing";
 import ProductCard from "../components/ProductCard";
 import Breadcrumbs from "../components/Breadcrumbs";
 
@@ -16,11 +17,13 @@ const SORTS = {
 const toggle = (list, value) => (list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
 
 const Shop = ({ deals = false }) => {
+  const { products, categories, brands, priceBounds, status, error, reload } = useCatalog();
   const [params, setParams] = useSearchParams();
   const q = params.get("q") || "";
   const selectedCategories = params.getAll("category");
 
-  const [maxPrice, setMaxPrice] = useState(priceBounds.max);
+  const [priceLimit, setPriceLimit] = useState(null);
+  const maxPrice = priceLimit ?? priceBounds.max;
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [brandQuery, setBrandQuery] = useState("");
   const [minRating, setMinRating] = useState(0);
@@ -38,19 +41,19 @@ const Shop = ({ deals = false }) => {
     const term = q.toLowerCase();
     return products
       .filter((p) => !deals || p.discountPrice)
-      .filter((p) => !selectedCategories.length || selectedCategories.includes(p.category.slug))
+      .filter((p) => !selectedCategories.length || selectedCategories.includes(p.category?.slug))
       .filter((p) => !selectedBrands.length || selectedBrands.includes(p.brand))
-      .filter((p) => sellingPrice(p) <= maxPrice)
-      .filter((p) => p.rating >= minRating)
+      .filter((p) => priceLimit === null || sellingPrice(p) <= priceLimit)
+      .filter((p) => !minRating || (p.rating ?? 0) >= minRating)
       .filter(
         (p) =>
           !term ||
           p.name.toLowerCase().includes(term) ||
           p.brand?.toLowerCase().includes(term) ||
-          p.category.name.toLowerCase().includes(term),
+          p.category?.name.toLowerCase().includes(term),
       )
       .sort(SORTS[sort].fn);
-  }, [q, deals, selectedCategories, selectedBrands, maxPrice, minRating, sort]);
+  }, [products, q, deals, selectedCategories, selectedBrands, priceLimit, minRating, sort]);
 
   const activeCategory = selectedCategories.length === 1 && categories.find((c) => c.slug === selectedCategories[0]);
   const title = deals
@@ -62,12 +65,12 @@ const Shop = ({ deals = false }) => {
         : "All Products";
 
   const visibleBrands = brands.filter((b) => b.toLowerCase().includes(brandQuery.toLowerCase()));
-  const hasFilters = selectedCategories.length || selectedBrands.length || minRating || maxPrice < priceBounds.max || q;
+  const hasFilters = selectedCategories.length || selectedBrands.length || minRating || priceLimit !== null || q;
 
   const resetFilters = () => {
     setParams(new URLSearchParams(), { replace: true });
     setSelectedBrands([]);
-    setMaxPrice(priceBounds.max);
+    setPriceLimit(null);
     setMinRating(0);
   };
 
@@ -118,7 +121,7 @@ const Shop = ({ deals = false }) => {
               max={priceBounds.max}
               step={500}
               value={maxPrice}
-              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              onChange={(e) => setPriceLimit(Number(e.target.value) >= priceBounds.max ? null : Number(e.target.value))}
               aria-label="Maximum price"
             />
             <div className="mt-2 flex justify-between text-xs text-muted">
@@ -212,7 +215,16 @@ const Shop = ({ deals = false }) => {
             </div>
           </div>
 
-          {results.length ? (
+          {status === "loading" ? (
+            <div className="py-16 text-center text-muted">Loading products...</div>
+          ) : status === "error" ? (
+            <div className="flex flex-col items-center gap-3 py-16 text-center">
+              <p className="text-danger">Could not load products: {error}</p>
+              <button type="button" className="btn btn-outline" onClick={reload}>
+                Try again
+              </button>
+            </div>
+          ) : results.length ? (
             <div className="grid grid-cols-2 gap-2.5 xs:gap-3 sm:grid-cols-3 sm:gap-[18px] md:grid-cols-2 lg:grid-cols-3">
               {results.map((p) => (
                 <ProductCard key={p.id} product={p} showBrand={false} />

@@ -7,7 +7,11 @@ const OrderSummary = ({ totals, children, items }) => (
       <ul className="mb-2">
         {items.map((i) => (
           <li key={i.key} className="grid grid-cols-[40px_1fr_auto_auto] items-center gap-2.5 py-2 text-[13px]">
-            <img src={i.product.thumbnail} alt="" className="size-10 rounded-md object-cover" />
+            {i.product.thumbnail ? (
+              <img src={i.product.thumbnail} alt="" className="size-10 rounded-md object-cover" />
+            ) : (
+              <span className="size-10 rounded-md bg-subtle" />
+            )}
             <span className="truncate">{i.product.name}</span>
             <span className="text-muted">×{i.quantity}</span>
             <span>{whole((i.product.discountPrice ?? i.product.price) * i.quantity)}</span>

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
+import { storeApi } from "../api";
 import { Banknote, Check, CreditCard, Plus, Smartphone } from "lucide-react";
 import { useShop } from "../context/ShopContext";
 import OrderSummary from "../components/OrderSummary";
@@ -15,25 +16,53 @@ const PAYMENT_METHODS = [
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cartItems, totals, addresses, addAddress, placeOrder } = useShop();
-  const [addressId, setAddressId] = useState(addresses.find((a) => a.isDefault)?.id || addresses[0]?.id);
+  const { user, authReady, availableItems, totals, placeOrder } = useShop();
+  const [addresses, setAddresses] = useState(null);
+  const [addressId, setAddressId] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("card");
-  const [showForm, setShowForm] = useState(addresses.length === 0);
+  const [showForm, setShowForm] = useState(false);
   const [placing, setPlacing] = useState(false);
+  const [error, setError] = useState("");
 
-  if (!cartItems.length && !placing) return <Navigate to="/cart" replace />;
+  useEffect(() => {
+    if (!user) return;
+    storeApi
+      .get("/addresses")
+      .then((list) => {
+        setAddresses(list);
+        setAddressId(list.find((a) => a.isDefault)?.id || list[0]?.id || null);
+        setShowForm(list.length === 0);
+      })
+      .catch((err) => setError(err.message));
+  }, [user]);
+
+  if (!authReady) return <div className="page-container py-16 text-center text-muted">Loading...</div>;
+  if (!user) return <Navigate to="/login" replace state={{ from: "/checkout" }} />;
+  if (!availableItems.length && !placing) return <Navigate to="/cart" replace />;
+  if (!addresses) {
+    return <div className="page-container py-16 text-center text-muted">{error || "Loading your addresses..."}</div>;
+  }
 
   const step = !addressId ? 0 : paymentMethod ? 2 : 1;
 
-  const handleAddAddress = (address) => {
-    setAddressId(addAddress(address));
+  const handleAddAddress = async (address) => {
+    const created = await storeApi.post("/addresses", address);
+    const list = await storeApi.get("/addresses");
+    setAddresses(list);
+    setAddressId(created.id);
     setShowForm(false);
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     setPlacing(true);
-    const order = placeOrder({ addressId, paymentMethod });
-    navigate(`/order-success/${order.number}`, { replace: true });
+    setError("");
+    try {
+      const order = await placeOrder({ addressId, paymentMethod });
+      navigate(`/order-success/${order.id}`, { replace: true });
+    } catch (err) {
+      setError(err.message);
+      setPlacing(false);
+    }
   };
 
   return (
@@ -62,9 +91,8 @@ const Checkout = () => {
                   <input type="radio" name="address" checked={addressId === a.id} onChange={() => setAddressId(a.id)} />
                   <div>
                     <div className="flex items-center gap-2 font-semibold">
-                      {a.label || "Address"} {a.isDefault && <span className="badge">Default</span>}
+                      {a.fullName} {a.isDefault && <span className="badge">Default</span>}
                     </div>
-                    <div>{a.fullName}</div>
                     <div className="text-muted">
                       {[a.addressLine1, a.addressLine2, a.city, a.state, a.postalCode].filter(Boolean).join(", ")}
                     </div>
@@ -108,14 +136,15 @@ const Checkout = () => {
           </section>
         </div>
 
-        <OrderSummary totals={totals} items={cartItems}>
+        <OrderSummary totals={totals} items={availableItems}>
+          {error && <div className="alert-error">{error}</div>}
           <button
             type="button"
             className="btn btn-primary w-full p-3"
             disabled={!addressId || placing}
             onClick={handlePlaceOrder}
           >
-            Place Order
+            {placing ? "Placing order..." : "Place Order"}
           </button>
           <Link to="/cart" className="mt-3 block text-center font-medium">
             Back to cart

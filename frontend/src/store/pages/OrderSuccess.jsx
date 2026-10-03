@@ -1,12 +1,20 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { Check } from "lucide-react";
-import { useShop } from "../context/ShopContext";
+import { storeApi } from "../api";
 import { whole } from "../components/Price";
 
 const OrderSuccess = () => {
-  const { orderNumber } = useParams();
-  const { orders } = useShop();
-  const order = orders.find((o) => o.number === orderNumber);
+  const { orderId } = useParams();
+  const [order, setOrder] = useState(null);
+
+  useEffect(() => {
+    storeApi
+      .get(`/orders/${orderId}`)
+      .then(setOrder)
+      .catch(() => setOrder(false));
+  }, [orderId]);
+
   const itemCount = order ? order.items.reduce((n, i) => n + i.quantity, 0) : 0;
 
   return (
@@ -19,17 +27,17 @@ const OrderSuccess = () => {
         <p className="text-muted">Thank you for your purchase. Your order has been placed and is being processed.</p>
         <div className="my-3 flex flex-col gap-0.5 [&>strong]:text-xl">
           <span className="text-muted">Order Number</span>
-          <strong>#{orderNumber}</strong>
+          <strong>{order ? `#${order.orderNumber}` : order === false ? "Order placed" : "Loading..."}</strong>
           {order && (
             <span className="text-muted">
-              {itemCount} {itemCount === 1 ? "item" : "items"} · {whole(order.total)}
+              {itemCount} {itemCount === 1 ? "item" : "items"} · {whole(Number(order.totalAmount))}
             </span>
           )}
         </div>
         <Link to="/shop" className="btn btn-primary w-full p-3">
           Continue Shopping
         </Link>
-        <Link to={`/account/orders/${orderNumber}`} className="btn btn-outline-primary w-full p-3">
+        <Link to={`/account/orders/${orderId}`} className="btn btn-outline-primary w-full p-3">
           View Order Details
         </Link>
       </div>

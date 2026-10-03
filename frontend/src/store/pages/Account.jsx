@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, Navigate, NavLink, Outlet, useLocation, useNavigate, useParams } from "react-router";
-import { Heart, LogOut, MapPin, Package, Plus, Settings, Trash2, User } from "lucide-react";
+import { Heart, LogOut, MapPin, Package, Pencil, Plus, Settings, Trash2, User } from "lucide-react";
 import { useShop } from "../context/ShopContext";
-import { products } from "../data/catalog";
+import { storeApi } from "../api";
 import ProductCard from "../components/ProductCard";
 import AddressForm from "../components/AddressForm";
 import { whole } from "../components/Price";
@@ -10,11 +10,17 @@ import { formatDate } from "../../utils/format";
 
 const STATUS_CLASS = {
   pending: "badge-warning",
-  processing: "badge-warning",
+  confirmed: "badge-info",
+  processing: "badge-info",
   shipped: "badge-primary",
   delivered: "badge-success",
   cancelled: "badge-danger",
+  returned: "badge-danger",
 };
+
+const StatusBadge = ({ status }) => <span className={`badge ${STATUS_CLASS[status] || ""}`}>{status}</span>;
+
+const linkBtn = "inline-flex cursor-pointer items-center gap-1 font-medium text-primary hover:underline";
 
 const PAYMENT_LABELS = { card: "Credit / Debit Card", upi: "UPI", cod: "Cash on Delivery" };
 
@@ -37,10 +43,11 @@ const accountLinkClass = ({ isActive }) =>
   }`;
 
 export const AccountLayout = () => {
-  const { user, logout } = useShop();
+  const { user, authReady, logout } = useShop();
   const navigate = useNavigate();
   const location = useLocation();
 
+  if (!authReady) return <div className="page-container py-16 text-center text-muted">Loading...</div>;
   if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
 
   return (
@@ -81,14 +88,52 @@ export const AccountLayout = () => {
   );
 };
 
+const panel = "mb-4 rounded-xl border border-line bg-surface p-[18px] leading-relaxed [&>h4]:mb-2.5 [&>h4]:font-bold";
+const emptyBox =
+  "flex flex-col items-center gap-2.5 rounded-xl border border-dashed border-line bg-surface px-4 py-10 text-center [&>h3]:text-base [&>h3]:font-bold [&>p]:mb-2 [&>svg]:text-primary";
+const titleRow =
+  "mb-4 flex flex-wrap items-center justify-between gap-3 [&>h2]:text-lg [&>h2]:font-bold sm:[&>h2]:text-xl";
+const summaryRows =
+  "mb-4 [&>div]:flex [&>div]:justify-between [&>div]:py-[7px] [&_dd]:m-0 [&_dd]:font-medium [&_dt]:text-muted";
+const summaryTotal =
+  "mt-1.5 border-t border-line pt-3 text-base [&_dd]:font-extrabold [&_dt]:font-bold [&_dt]:text-ink";
+
+const money = (value) => whole(Number(value));
+const addressLine = (a) => [a.addressLine1, a.addressLine2, a.city, a.state, a.postalCode].filter(Boolean).join(", ");
+
+const useApi = (path) => {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState("");
+
+  const load = useCallback(async () => {
+    setError("");
+    try {
+      setData(await storeApi.get(path));
+    } catch (err) {
+      setError(err.message);
+    }
+  }, [path]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return { data, error, reload: load, setData };
+};
+
+const Loading = ({ error }) =>
+  error ? <p className="text-danger">{error}</p> : <p className="py-6 text-muted">Loading...</p>;
+
 export const MyOrders = () => {
-  const { orders } = useShop();
+  const { data, error } = useApi("/orders?limit=50");
 
   return (
     <>
       <h2>My Orders</h2>
-      {orders.length === 0 ? (
-        <div className="flex flex-col items-center gap-2.5 rounded-xl border border-dashed border-line bg-surface px-4 py-10 text-center [&>h3]:text-base [&>h3]:font-bold [&>p]:mb-2 [&>svg]:text-primary">
+      {!data ? (
+        <Loading error={error} />
+      ) : data.items.length === 0 ? (
+        <div className={emptyBox}>
           <Package size={32} />
           <h3>No orders yet</h3>
           <Link to="/shop" className="btn btn-primary">
@@ -97,25 +142,29 @@ export const MyOrders = () => {
         </div>
       ) : (
         <div className="flex flex-col rounded-xl border border-line bg-surface">
-          {orders.map((o) => (
+          {data.items.map((o) => (
             <div
-              key={o.number}
+              key={o.id}
               className="grid grid-cols-[1fr_auto] items-center gap-2.5 border-b border-line p-3.5 last:border-b-0 max-sm:[&>.btn]:col-span-2 sm:grid-cols-[auto_1fr_auto_auto] sm:gap-[18px] sm:px-[18px]"
             >
               <div className="hidden gap-1.5 sm:flex [&>img]:size-[52px] [&>img]:rounded-lg [&>img]:object-cover">
-                {o.items.slice(0, 2).map((i) => (
-                  <img key={i.productId + (i.size || "") + (i.color || "")} src={i.thumbnail} alt="" />
-                ))}
+                {o.items.map((i) =>
+                  i.product?.thumbnailUrl ? (
+                    <img key={i.id} src={i.product.thumbnailUrl} alt="" />
+                  ) : (
+                    <span key={i.id} className="size-[52px] rounded-lg bg-subtle" />
+                  ),
+                )}
               </div>
               <div className="flex flex-col gap-0.5 text-[13px]">
-                <strong>#{o.number}</strong>
-                <span className="text-muted">Placed on {formatDate(o.placedAt)}</span>
+                <strong>#{o.orderNumber}</strong>
+                <span className="text-muted">Placed on {formatDate(o.createdAt)}</span>
                 <span className="text-muted">
-                  {o.items.reduce((n, i) => n + i.quantity, 0)} items · {whole(o.total)}
+                  {o._count.items} {o._count.items === 1 ? "item" : "items"} · {money(o.totalAmount)}
                 </span>
               </div>
-              <span className={`badge ${STATUS_CLASS[o.status] || ""}`}>{o.status}</span>
-              <Link to={`/account/orders/${o.number}`} className="btn btn-outline btn-sm">
+              <StatusBadge status={o.orderStatus} />
+              <Link to={`/account/orders/${o.id}`} className="btn btn-outline btn-sm">
                 View Details
               </Link>
             </div>
@@ -127,79 +176,117 @@ export const MyOrders = () => {
 };
 
 export const OrderDetails = () => {
-  const { orderNumber } = useParams();
-  const { orders } = useShop();
-  const order = orders.find((o) => o.number === orderNumber);
+  const { orderId } = useParams();
+  const { notify, refreshCart } = useShop();
+  const { data: order, error, setData } = useApi(`/orders/${orderId}`);
+  const [cancelling, setCancelling] = useState(false);
 
   if (!order) {
-    return (
-      <div className="flex flex-col items-center gap-2.5 rounded-xl border border-dashed border-line bg-surface px-4 py-10 text-center [&>h3]:text-base [&>h3]:font-bold [&>p]:mb-2 [&>svg]:text-primary">
+    return error ? (
+      <div className={emptyBox}>
         <h3>Order not found</h3>
         <Link to="/account/orders" className="btn btn-primary">
           Back to orders
         </Link>
       </div>
+    ) : (
+      <Loading />
     );
   }
 
+  const cancel = async () => {
+    if (!confirm("Cancel this order?")) return;
+    setCancelling(true);
+    try {
+      setData(await storeApi.post(`/orders/${order.id}/cancel`));
+      notify("Order cancelled");
+      refreshCart();
+    } catch (err) {
+      notify(err.message, "error");
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   const a = order.address;
+  const canCancel = ["pending", "confirmed"].includes(order.orderStatus);
 
   return (
     <>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 [&>h1]:text-[22px] [&>h1]:font-bold [&>h1]:tracking-tight sm:[&>h1]:text-[26px] [&>h1>span]:text-sm [&>h1>span]:font-medium sm:[&>h1>span]:text-base [&>h2]:text-lg [&>h2]:font-bold sm:[&>h2]:text-xl">
-        <h2>Order #{order.number}</h2>
-        <span className={`badge ${STATUS_CLASS[order.status] || ""}`}>{order.status}</span>
+      <div className={titleRow}>
+        <h2>Order #{order.orderNumber}</h2>
+        <StatusBadge status={order.orderStatus} />
       </div>
-      <p className="text-muted">Placed on {formatDate(order.placedAt)}</p>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-muted">Placed on {formatDate(order.createdAt)}</p>
+        {canCancel && (
+          <button type="button" className="btn btn-outline btn-sm text-danger" onClick={cancel} disabled={cancelling}>
+            {cancelling ? "Cancelling..." : "Cancel Order"}
+          </button>
+        )}
+      </div>
 
       <div className="grid gap-4 md:grid-cols-[1.4fr_1fr]">
-        <div className="mb-4 rounded-xl border border-line bg-surface p-[18px] leading-relaxed [&>h4]:mb-2.5 [&>h4]:font-bold">
+        <div className={panel}>
           <h4>Items</h4>
           {order.items.map((i) => (
             <div
-              key={i.productId + (i.size || "") + (i.color || "")}
-              className="grid grid-cols-[52px_1fr_auto] items-center gap-3 border-b border-line py-2.5 last:border-b-0 [&>img]:size-[52px] [&>img]:rounded-lg [&>img]:object-cover"
+              key={i.id}
+              className="grid grid-cols-[52px_1fr_auto] items-center gap-3 border-b border-line py-2.5 last:border-b-0"
             >
-              <img src={i.thumbnail} alt="" />
+              {i.product?.thumbnailUrl ? (
+                <img src={i.product.thumbnailUrl} alt="" className="size-[52px] rounded-lg object-cover" />
+              ) : (
+                <span className="size-[52px] rounded-lg bg-subtle" />
+              )}
               <div>
-                <div>{i.name}</div>
+                {i.product?.slug ? (
+                  <Link to={`/product/${i.product.slug}`} className="text-ink hover:text-muted">
+                    {i.productName}
+                  </Link>
+                ) : (
+                  <div>{i.productName}</div>
+                )}
                 <div className="text-muted">
-                  {[i.size && `Size ${i.size}`, i.color, `Qty ${i.quantity}`].filter(Boolean).join(" · ")}
+                  {money(i.productPrice)} × {i.quantity}
                 </div>
               </div>
-              <strong>{whole(i.price * i.quantity)}</strong>
+              <strong>{money(i.subtotal)}</strong>
             </div>
           ))}
         </div>
-        <div className="mb-4 rounded-xl border border-line bg-surface p-[18px] leading-relaxed [&>h4]:mb-2.5 [&>h4]:font-bold">
+        <div className={panel}>
           <h4>Delivery Address</h4>
           {a && (
-            <p className="text-muted">
+            <p className="mb-3 text-muted">
               {a.fullName}
               <br />
-              {[a.addressLine1, a.addressLine2, a.city, a.state, a.postalCode].filter(Boolean).join(", ")}
+              {addressLine(a)}
               <br />
               {a.phone}
             </p>
           )}
           <h4>Payment</h4>
-          <p className="text-muted">{PAYMENT_LABELS[order.paymentMethod]}</p>
-          <dl className="mb-4 [&>div]:flex [&>div]:justify-between [&>div]:py-[7px] [&_dd]:m-0 [&_dd]:font-medium [&_dt]:text-muted">
+          <p className="mb-3 text-muted">
+            {PAYMENT_LABELS[order.paymentMethod] || order.paymentMethod} ·{" "}
+            <span className="capitalize">{order.paymentStatus}</span>
+          </p>
+          <dl className={summaryRows}>
             <div>
               <dt>Subtotal</dt>
-              <dd>{whole(order.subtotal)}</dd>
+              <dd>{money(order.subtotal)}</dd>
             </div>
             <div>
               <dt>Discount</dt>
-              <dd className="text-success">-{whole(order.discount)}</dd>
+              <dd className="text-success">-{money(order.discountAmount)}</dd>
             </div>
             <div>
               <dt>Shipping</dt>
-              <dd>{order.shipping ? whole(order.shipping) : "Free"}</dd>
+              <dd>{Number(order.shippingAmount) ? money(order.shippingAmount) : "Free"}</dd>
             </div>
-            <div className="mt-1.5 border-t border-line pt-3 text-base [&_dd]:font-extrabold [&_dt]:font-bold [&_dt]:text-ink">
+            <div className={summaryTotal}>
               <dt>Total</dt>
-              <dd>{whole(order.total)}</dd>
+              <dd>{money(order.totalAmount)}</dd>
             </div>
           </dl>
         </div>
@@ -209,34 +296,59 @@ export const OrderDetails = () => {
 };
 
 export const Profile = () => {
-  const { user, login } = useShop();
+  const { user, updateProfile, notify } = useShop();
   const [name, setName] = useState(user.name);
-  const [saved, setSaved] = useState(false);
+  const [phone, setPhone] = useState(user.phone || "");
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login({ email: user.email, name: name.trim() });
-    setSaved(true);
+    setSaving(true);
+    setError("");
+    try {
+      await updateProfile({ name: name.trim(), phone: phone.trim() || null });
+      notify("Profile updated");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
     <>
       <h2>Profile</h2>
-      <form
-        className="mb-4 max-w-[480px] rounded-xl border border-line bg-surface p-[18px] leading-relaxed [&>h4]:mb-2.5 [&>h4]:font-bold"
-        onSubmit={handleSubmit}
-      >
-        {saved && <div className="mb-3.5 rounded-lg bg-primary-soft px-3.5 py-2.5 text-ink">Profile updated.</div>}
+      <form className={`${panel} max-w-[480px]`} onSubmit={handleSubmit}>
+        {error && <div className="alert-error">{error}</div>}
         <div className="field">
           <label htmlFor="profile-name">Full name</label>
-          <input id="profile-name" className="input" value={name} onChange={(e) => setName(e.target.value)} required />
+          <input
+            id="profile-name"
+            className="input"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            minLength={2}
+          />
+        </div>
+        <div className="field">
+          <label htmlFor="profile-phone">Phone</label>
+          <input
+            id="profile-phone"
+            className="input"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            maxLength={20}
+          />
         </div>
         <div className="field">
           <label htmlFor="profile-email">Email</label>
           <input id="profile-email" className="input" value={user.email} disabled />
         </div>
-        <button type="submit" className="btn btn-primary">
-          Save Changes
+        <button type="submit" className="btn btn-primary" disabled={saving}>
+          {saving ? "Saving..." : "Save Changes"}
         </button>
       </form>
     </>
@@ -244,12 +356,50 @@ export const Profile = () => {
 };
 
 export const Addresses = () => {
-  const { addresses, addAddress, removeAddress } = useShop();
+  const { notify } = useShop();
+  const { data: addresses, error, reload } = useApi("/addresses");
   const [adding, setAdding] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+
+  const create = async (address) => {
+    await storeApi.post("/addresses", address);
+    await reload();
+    setAdding(false);
+    notify("Address saved");
+  };
+
+  const update = async (id, address) => {
+    await storeApi.patch(`/addresses/${id}`, address);
+    await reload();
+    setEditingId(null);
+    notify("Address updated");
+  };
+
+  const makeDefault = async (id) => {
+    try {
+      await storeApi.patch(`/addresses/${id}`, { isDefault: true });
+      await reload();
+    } catch (err) {
+      notify(err.message, "error");
+    }
+  };
+
+  const remove = async (id) => {
+    if (!confirm("Delete this address?")) return;
+    try {
+      await storeApi.delete(`/addresses/${id}`);
+      await reload();
+      notify("Address deleted");
+    } catch (err) {
+      notify(err.message, "error");
+    }
+  };
+
+  if (!addresses) return <Loading error={error} />;
 
   return (
     <>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 [&>h1]:text-[22px] [&>h1]:font-bold [&>h1]:tracking-tight sm:[&>h1]:text-[26px] [&>h1>span]:text-sm [&>h1>span]:font-medium sm:[&>h1>span]:text-base [&>h2]:text-lg [&>h2]:font-bold sm:[&>h2]:text-xl">
+      <div className={titleRow}>
         <h2>Addresses</h2>
         {!adding && (
           <button type="button" className="btn btn-primary btn-sm" onClick={() => setAdding(true)}>
@@ -258,39 +408,46 @@ export const Addresses = () => {
         )}
       </div>
       {adding && (
-        <div className="mb-4 rounded-xl border border-line bg-surface p-[18px] leading-relaxed [&>h4]:mb-2.5 [&>h4]:font-bold">
-          <AddressForm
-            onSubmit={(a) => {
-              addAddress(a);
-              setAdding(false);
-            }}
-            onCancel={() => setAdding(false)}
-          />
+        <div className={panel}>
+          <AddressForm onSubmit={create} onCancel={() => setAdding(false)} />
         </div>
       )}
-      <div className="grid gap-4 sm:grid-cols-2 [&_button]:mt-2">
-        {addresses.map((a) => (
-          <div
-            key={a.id}
-            className="mb-4 rounded-xl border border-line bg-surface p-[18px] leading-relaxed [&>h4]:mb-2.5 [&>h4]:font-bold"
-          >
-            <div className="flex items-center gap-2 font-semibold">
-              {a.label || "Address"} {a.isDefault && <span className="badge">Default</span>}
+      <div className="grid gap-4 sm:grid-cols-2">
+        {addresses.map((a) =>
+          editingId === a.id ? (
+            <div key={a.id} className={`${panel} sm:col-span-2`}>
+              <AddressForm
+                initial={a}
+                onSubmit={(changes) => update(a.id, changes)}
+                onCancel={() => setEditingId(null)}
+                submitLabel="Update Address"
+              />
             </div>
-            <div>{a.fullName}</div>
-            <div className="text-muted">
-              {[a.addressLine1, a.addressLine2, a.city, a.state, a.postalCode].filter(Boolean).join(", ")}
+          ) : (
+            <div key={a.id} className={panel}>
+              <div className="flex items-center gap-2 font-semibold">
+                {a.fullName} {a.isDefault && <span className="badge">Default</span>}
+              </div>
+              <div className="text-muted">{addressLine(a)}</div>
+              <div className="text-muted">
+                {a.country} · {a.phone}
+              </div>
+              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                <button type="button" className={linkBtn} onClick={() => setEditingId(a.id)}>
+                  <Pencil size={14} /> Edit
+                </button>
+                {!a.isDefault && (
+                  <button type="button" className={linkBtn} onClick={() => makeDefault(a.id)}>
+                    Set as default
+                  </button>
+                )}
+                <button type="button" className={`${linkBtn} text-danger`} onClick={() => remove(a.id)}>
+                  <Trash2 size={14} /> Delete
+                </button>
+              </div>
             </div>
-            <div className="text-muted">{a.phone}</div>
-            <button
-              type="button"
-              className="inline-flex cursor-pointer items-center gap-1 font-medium text-danger hover:underline"
-              onClick={() => removeAddress(a.id)}
-            >
-              <Trash2 size={14} /> Remove
-            </button>
-          </div>
-        ))}
+          ),
+        )}
       </div>
       {addresses.length === 0 && !adding && <p className="text-muted">No saved addresses yet.</p>}
     </>
@@ -298,14 +455,13 @@ export const Addresses = () => {
 };
 
 export const Wishlist = () => {
-  const { wishlist } = useShop();
-  const items = products.filter((p) => wishlist.includes(p.id));
+  const { wishlistItems } = useShop();
 
   return (
     <>
       <h2>Wishlist</h2>
-      {items.length === 0 ? (
-        <div className="flex flex-col items-center gap-2.5 rounded-xl border border-dashed border-line bg-surface px-4 py-10 text-center [&>h3]:text-base [&>h3]:font-bold [&>p]:mb-2 [&>svg]:text-primary">
+      {wishlistItems.length === 0 ? (
+        <div className={emptyBox}>
           <Heart size={32} />
           <h3>Your wishlist is empty</h3>
           <p className="text-muted">Tap the heart on any product to save it here.</p>
@@ -315,7 +471,7 @@ export const Wishlist = () => {
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-2.5 xs:gap-3 sm:grid-cols-3 sm:gap-[18px] md:grid-cols-2 lg:grid-cols-3">
-          {items.map((p) => (
+          {wishlistItems.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
@@ -325,25 +481,60 @@ export const Wishlist = () => {
 };
 
 export const AccountSettings = () => {
-  const [prefs, setPrefs] = useState({ offers: true, orders: true, newsletter: false });
-  const toggle = (key) => setPrefs((p) => ({ ...p, [key]: !p[key] }));
+  const { changePassword, notify } = useShop();
+  const [form, setForm] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const handleChange = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    if (form.newPassword !== form.confirmPassword) return setError("New passwords do not match");
+    setSaving(true);
+    try {
+      await changePassword(form.currentPassword, form.newPassword);
+      setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      notify("Password changed");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <>
       <h2>Settings</h2>
-      <div className="mb-4 max-w-[480px] rounded-xl border border-line bg-surface p-[18px] leading-relaxed [&>h4]:mb-2.5 [&>h4]:font-bold">
-        <h4>Notifications</h4>
+      <form className={`${panel} max-w-[480px]`} onSubmit={handleSubmit}>
+        <h4>Change password</h4>
+        {error && <div className="alert-error">{error}</div>}
         {[
-          ["orders", "Order updates by email"],
-          ["offers", "Deals and offers"],
-          ["newsletter", "Weekly newsletter"],
-        ].map(([key, label]) => (
-          <label key={key} className="mb-3 flex items-center gap-2 [&>input]:accent-primary">
-            <input type="checkbox" checked={prefs[key]} onChange={() => toggle(key)} />
-            {label}
-          </label>
+          ["currentPassword", "Current password", "current-password"],
+          ["newPassword", "New password", "new-password"],
+          ["confirmPassword", "Confirm new password", "new-password"],
+        ].map(([name, label, autoComplete]) => (
+          <div key={name} className="field">
+            <label htmlFor={`settings-${name}`}>{label}</label>
+            <input
+              id={`settings-${name}`}
+              className="input"
+              type="password"
+              name={name}
+              value={form[name]}
+              onChange={handleChange}
+              autoComplete={autoComplete}
+              minLength={name === "currentPassword" ? 1 : 8}
+              maxLength={72}
+              required
+            />
+          </div>
         ))}
-      </div>
+        <button type="submit" className="btn btn-primary" disabled={saving}>
+          {saving ? "Saving..." : "Change Password"}
+        </button>
+      </form>
     </>
   );
 };

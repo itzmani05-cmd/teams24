@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { ShoppingCart, Trash2 } from "lucide-react";
 import { useShop } from "../context/ShopContext";
-import { SHIPPING, sellingPrice } from "../data/catalog";
+import { SHIPPING, sellingPrice } from "../utils/pricing";
 import QuantityStepper from "../components/QuantityStepper";
 import OrderSummary from "../components/OrderSummary";
 import { whole } from "../components/Price";
@@ -63,9 +63,13 @@ const Cart = () => {
                   {item.product.name}
                 </Link>
                 <div className="mt-1 text-[13px] text-muted">
-                  {[item.size && `Size: ${item.size}`, item.color && `Color: ${item.color}`]
-                    .filter(Boolean)
-                    .join("  ·  ") || item.product.brand}
+                  {!item.product.isActive
+                    ? "No longer available"
+                    : item.product.stock < item.quantity
+                      ? `Only ${item.product.stock} left in stock`
+                      : item.product.stock <= 5
+                        ? `Only ${item.product.stock} left`
+                        : "In stock"}
                 </div>
               </div>
               <QuantityStepper

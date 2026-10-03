@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation, useNavigate, useSearchParams } from "react-router";
 import { Heart, Menu, Search, ShoppingCart, User, X } from "lucide-react";
 import { useShop } from "../context/ShopContext";
-import { categories } from "../data/catalog";
+import { useCatalog } from "../context/CatalogContext";
 import CategoryIcon from "./CategoryIcon";
 
 const iconBtn =
@@ -25,7 +25,8 @@ const Logo = ({ dark = false }) => (
 );
 
 const Header = () => {
-  const { totals, wishlist, user } = useShop();
+  const { totals, wishlistItems, user } = useShop();
+  const { categories } = useCatalog();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
   const [params] = useSearchParams();
@@ -105,7 +106,7 @@ const Header = () => {
         <div className="ml-auto flex gap-0.5 sm:ml-0 sm:gap-1.5">
           <Link to="/account/wishlist" className={iconBtn} aria-label="Wishlist">
             <Heart size={20} />
-            {wishlist.length > 0 && <span className={countBadge}>{wishlist.length}</span>}
+            {wishlistItems.length > 0 && <span className={countBadge}>{wishlistItems.length}</span>}
           </Link>
           <Link to="/cart" className={iconBtn} aria-label="Cart">
             <ShoppingCart size={20} />
@@ -188,7 +189,7 @@ const Header = () => {
             </>
           )}
           <NavLink to="/account/wishlist" className={menuLinkClass}>
-            Wishlist ({wishlist.length})
+            Wishlist ({wishlistItems.length})
           </NavLink>
           <NavLink to="/cart" className={menuLinkClass}>
             Cart ({totals.count})

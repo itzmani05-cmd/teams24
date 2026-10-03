@@ -47,7 +47,28 @@ const listProducts = async (query, extraWhere = {}) => {
     }),
     prisma.product.count({ where }),
   ]);
-  return paginated(items, total, pagination);
+  return paginated(await withRatings(items), total, pagination);
+};
+
+const withRatings = async (items) => {
+  if (!items.length) return items;
+  const stats = await prisma.review.groupBy({
+    by: ["productId"],
+    where: { productId: { in: items.map((p) => p.id) } },
+    _avg: { rating: true },
+    _count: { rating: true },
+  });
+  const byId = new Map(stats.map((s) => [s.productId, s]));
+  return items.map((p) => {
+    const s = byId.get(p.id);
+    return {
+      ...p,
+      rating: {
+        average: s?._avg.rating ? Number(s._avg.rating.toFixed(1)) : null,
+        count: s?._count.rating ?? 0,
+      },
+    };
+  });
 };
 
 const withRating = async (product) => {
