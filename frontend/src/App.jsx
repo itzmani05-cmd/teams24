@@ -18,6 +18,7 @@ import Checkout from "./store/pages/Checkout";
 import OrderSuccess from "./store/pages/OrderSuccess";
 import Auth from "./store/pages/Auth";
 import NotFound from "./store/pages/NotFound";
+import { Privacy, Terms } from "./store/pages/Legal";
 import {
   AccountLayout,
   AccountSettings,
@@ -75,6 +76,8 @@ const App = () => (
         <Route path="wishlist" element={<Wishlist />} />
         <Route path="settings" element={<AccountSettings />} />
       </Route>
+      <Route path="terms" element={<Terms />} />
+      <Route path="privacy" element={<Privacy />} />
       <Route path="*" element={<NotFound />} />
     </Route>
   </Routes>
