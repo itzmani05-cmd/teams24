@@ -123,16 +123,16 @@ const Products = () => {
 
   return (
     <>
-      <div className="page-header">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 [&>h1]:text-xl [&>h1]:font-bold sm:[&>h1]:text-[22px]">
         <h1>Products</h1>
-        <button className="btn" onClick={openCreate}>
+        <button className="btn btn-primary" onClick={openCreate}>
           + Add product
         </button>
       </div>
 
-      <div className="toolbar">
+      <div className="mb-4 flex flex-wrap gap-2 [&>*]:w-full [&>*]:min-w-0 sm:[&>*]:w-auto sm:[&>*]:min-w-[180px]">
         <input className="input" placeholder="Search products..." value={search} onChange={resetPage(setSearch)} />
-        <select className="select" value={category} onChange={resetPage(setCategory)}>
+        <select className="input" value={category} onChange={resetPage(setCategory)}>
           <option value="">All categories</option>
           {categories?.items.map((c) => (
             <option key={c.id} value={c.slug}>
@@ -140,17 +140,17 @@ const Products = () => {
             </option>
           ))}
         </select>
-        <select className="select" value={isActive} onChange={resetPage(setIsActive)}>
+        <select className="input" value={isActive} onChange={resetPage(setIsActive)}>
           <option value="">All statuses</option>
           <option value="true">Active</option>
           <option value="false">Inactive</option>
         </select>
       </div>
 
-      {error && <div className="error">{error}</div>}
+      {error && <div className="alert-error">{error}</div>}
 
-      <div className="table-wrap">
-        <table>
+      <div className="overflow-x-auto rounded-lg bg-surface shadow-card">
+        <table className="data-table">
           <thead>
             <tr>
               <th></th>
@@ -160,24 +160,30 @@ const Products = () => {
               <th>Price</th>
               <th>Stock</th>
               <th>Status</th>
-              <th className="col-actions">Actions</th>
+              <th className="w-[1%] text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             {data?.items.map((product) => (
               <tr key={product.id}>
-                <td>{product.thumbnailUrl ? <img className="thumb" src={product.thumbnailUrl} alt="" /> : <div className="thumb" />}</td>
+                <td>
+                  {product.thumbnailUrl ? (
+                    <img className="size-10 rounded-md bg-canvas object-cover" src={product.thumbnailUrl} alt="" />
+                  ) : (
+                    <div className="size-10 rounded-md bg-canvas object-cover" />
+                  )}
+                </td>
                 <td>
                   <div>{product.name}</div>
-                  {product.brand && <div className="muted">{product.brand}</div>}
+                  {product.brand && <div className="text-muted">{product.brand}</div>}
                 </td>
-                <td className="muted">{product.sku}</td>
+                <td className="text-muted">{product.sku}</td>
                 <td>{product.category?.name}</td>
                 <td>
                   {product.discountPrice ? (
                     <>
                       <div>{formatMoney(product.discountPrice)}</div>
-                      <div className="muted">
+                      <div className="text-muted">
                         <s>{formatMoney(product.price)}</s>
                       </div>
                     </>
@@ -186,14 +192,16 @@ const Products = () => {
                   )}
                 </td>
                 <td>
-                  <span className={`badge ${product.stock === 0 ? "badge-danger" : product.stock <= 5 ? "badge-warning" : "badge-success"}`}>
+                  <span
+                    className={`badge ${product.stock === 0 ? "badge-danger" : product.stock <= 5 ? "badge-warning" : "badge-success"}`}
+                  >
                     {product.stock}
                   </span>
                 </td>
                 <td>
                   <StatusBadge status={product.isActive ? "active" : "inactive"} />
                 </td>
-                <td className="col-actions">
+                <td className="w-[1%] text-center">
                   <ActionMenu
                     items={[
                       { label: "Edit", onClick: () => openEdit(product) },
@@ -205,8 +213,8 @@ const Products = () => {
             ))}
           </tbody>
         </table>
-        {loading && <div className="loading">Loading...</div>}
-        {!loading && data?.items.length === 0 && <div className="empty">No products found</div>}
+        {loading && <div className="p-10 text-center text-muted">Loading...</div>}
+        {!loading && data?.items.length === 0 && <div className="p-6 text-center text-muted">No products found</div>}
       </div>
 
       <Pagination pagination={data?.pagination} onChange={setPage} />
@@ -214,25 +222,31 @@ const Products = () => {
       {editing && (
         <Modal title={editing === "new" ? "Add product" : "Edit product"} onClose={() => setEditing(null)}>
           <form onSubmit={handleSubmit}>
-            {formError && <div className="error">{formError}</div>}
+            {formError && <div className="alert-error">{formError}</div>}
             <div className="field">
               <label>Name</label>
               <input className="input" name="name" value={form.name} onChange={handleChange} required />
             </div>
-            <div className="field-row">
+            <div className="grid gap-x-3 sm:grid-cols-2">
               <div className="field">
                 <label>SKU</label>
                 <input className="input" name="sku" value={form.sku} onChange={handleChange} required />
               </div>
               <div className="field">
                 <label>Slug</label>
-                <input className="input" name="slug" value={form.slug} onChange={handleChange} placeholder="Auto from name" />
+                <input
+                  className="input"
+                  name="slug"
+                  value={form.slug}
+                  onChange={handleChange}
+                  placeholder="Auto from name"
+                />
               </div>
             </div>
-            <div className="field-row">
+            <div className="grid gap-x-3 sm:grid-cols-2">
               <div className="field">
                 <label>Category</label>
-                <select className="select" name="categoryId" value={form.categoryId} onChange={handleChange} required>
+                <select className="input" name="categoryId" value={form.categoryId} onChange={handleChange} required>
                   <option value="">Select category</option>
                   {categories?.items.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -246,45 +260,87 @@ const Products = () => {
                 <input className="input" name="brand" value={form.brand} onChange={handleChange} />
               </div>
             </div>
-            <div className="field-row">
+            <div className="grid gap-x-3 sm:grid-cols-2">
               <div className="field">
                 <label>Price</label>
-                <input className="input" name="price" type="number" min="0.01" step="0.01" value={form.price} onChange={handleChange} required />
+                <input
+                  className="input"
+                  name="price"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  value={form.price}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="field">
                 <label>Discount price</label>
-                <input className="input" name="discountPrice" type="number" min="0" step="0.01" value={form.discountPrice} onChange={handleChange} />
+                <input
+                  className="input"
+                  name="discountPrice"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.discountPrice}
+                  onChange={handleChange}
+                />
               </div>
             </div>
-            <div className="field-row">
+            <div className="grid gap-x-3 sm:grid-cols-2">
               <div className="field">
                 <label>Stock</label>
-                <input className="input" name="stock" type="number" min="0" step="1" value={form.stock} onChange={handleChange} required />
+                <input
+                  className="input"
+                  name="stock"
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={form.stock}
+                  onChange={handleChange}
+                  required
+                />
               </div>
               <div className="field">
                 <label>Thumbnail URL</label>
-                <input className="input" name="thumbnailUrl" type="url" value={form.thumbnailUrl} onChange={handleChange} />
+                <input
+                  className="input"
+                  name="thumbnailUrl"
+                  type="url"
+                  value={form.thumbnailUrl}
+                  onChange={handleChange}
+                />
               </div>
             </div>
             {editing === "new" && (
               <div className="field">
                 <label>Gallery image URLs (one per line)</label>
-                <textarea className="textarea" name="images" value={form.images} onChange={handleChange} />
+                <textarea
+                  className="input min-h-20 resize-y"
+                  name="images"
+                  value={form.images}
+                  onChange={handleChange}
+                />
               </div>
             )}
             <div className="field">
               <label>Description</label>
-              <textarea className="textarea" name="description" value={form.description} onChange={handleChange} />
+              <textarea
+                className="input min-h-20 resize-y"
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+              />
             </div>
-            <label className="checkbox">
+            <label className="mb-3 flex items-center gap-2">
               <input type="checkbox" name="isActive" checked={form.isActive} onChange={handleChange} />
               Active
             </label>
-            <div className="modal-footer">
+            <div className="mt-2 flex justify-end gap-2">
               <button type="button" className="btn btn-outline" onClick={() => setEditing(null)}>
                 Cancel
               </button>
-              <button type="submit" className="btn" disabled={saving}>
+              <button type="submit" className="btn btn-primary" disabled={saving}>
                 {saving ? "Saving..." : "Save"}
               </button>
             </div>

@@ -48,25 +48,32 @@ const OrderDetail = ({ orderId, onClose, onChanged }) => {
 
   return (
     <Modal title={order ? `Order ${order.orderNumber}` : "Order"} onClose={onClose}>
-      {loading && !order && <div className="loading">Loading...</div>}
-      {error && <div className="error">{error}</div>}
-      {actionError && <div className="error">{actionError}</div>}
+      {loading && !order && <div className="p-10 text-center text-muted">Loading...</div>}
+      {error && <div className="alert-error">{error}</div>}
+      {actionError && <div className="alert-error">{actionError}</div>}
 
       {order && (
         <>
-          <dl className="detail-list">
+          <dl className="mb-4 grid grid-cols-[110px_1fr] gap-x-3 gap-y-1.5 sm:grid-cols-[140px_1fr] [&_dd]:m-0 [&_dt]:text-muted">
             <dt>Placed</dt>
             <dd>{formatDateTime(order.createdAt)}</dd>
             <dt>Customer</dt>
             <dd>
               {order.user.name}
-              <div className="muted">{order.user.email}</div>
+              <div className="text-muted">{order.user.email}</div>
             </dd>
             <dt>Ship to</dt>
             <dd>
               {order.address.fullName}, {order.address.phone}
-              <div className="muted">
-                {[order.address.addressLine1, order.address.addressLine2, order.address.city, order.address.state, order.address.postalCode, order.address.country]
+              <div className="text-muted">
+                {[
+                  order.address.addressLine1,
+                  order.address.addressLine2,
+                  order.address.city,
+                  order.address.state,
+                  order.address.postalCode,
+                  order.address.country,
+                ]
                   .filter(Boolean)
                   .join(", ")}
               </div>
@@ -80,7 +87,7 @@ const OrderDetail = ({ orderId, onClose, onChanged }) => {
             <dt>Payment status</dt>
             <dd>
               <select
-                className="select"
+                className="input"
                 style={{ width: "auto" }}
                 value={order.paymentStatus}
                 disabled={busy}
@@ -95,8 +102,8 @@ const OrderDetail = ({ orderId, onClose, onChanged }) => {
             </dd>
           </dl>
 
-          <div className="table-wrap" style={{ marginBottom: 16 }}>
-            <table>
+          <div className="overflow-x-auto rounded-lg bg-surface shadow-card" style={{ marginBottom: 16 }}>
+            <table className="data-table">
               <thead>
                 <tr>
                   <th>Item</th>
@@ -118,7 +125,7 @@ const OrderDetail = ({ orderId, onClose, onChanged }) => {
             </table>
           </div>
 
-          <dl className="detail-list">
+          <dl className="mb-4 grid grid-cols-[110px_1fr] gap-x-3 gap-y-1.5 sm:grid-cols-[140px_1fr] [&_dd]:m-0 [&_dt]:text-muted">
             <dt>Subtotal</dt>
             <dd>{formatMoney(order.subtotal)}</dd>
             <dt>Discount</dt>
@@ -134,11 +141,11 @@ const OrderDetail = ({ orderId, onClose, onChanged }) => {
           </dl>
 
           {NEXT_STATUSES[order.orderStatus].length > 0 && (
-            <div className="modal-footer">
+            <div className="mt-2 flex justify-end gap-2">
               {NEXT_STATUSES[order.orderStatus].map((status) => (
                 <button
                   key={status}
-                  className={`btn ${["cancelled", "returned"].includes(status) ? "btn-danger" : ""}`}
+                  className={`btn ${["cancelled", "returned"].includes(status) ? "btn-danger" : "btn-primary"}`}
                   disabled={busy}
                   onClick={() => changeStatus(status)}
                 >
@@ -169,13 +176,18 @@ const Orders = () => {
 
   return (
     <>
-      <div className="page-header">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 [&>h1]:text-xl [&>h1]:font-bold sm:[&>h1]:text-[22px]">
         <h1>Orders</h1>
       </div>
 
-      <div className="toolbar">
-        <input className="input" placeholder="Order no, customer name or email..." value={search} onChange={resetPage(setSearch)} />
-        <select className="select" value={status} onChange={resetPage(setStatus)}>
+      <div className="mb-4 flex flex-wrap gap-2 [&>*]:w-full [&>*]:min-w-0 sm:[&>*]:w-auto sm:[&>*]:min-w-[180px]">
+        <input
+          className="input"
+          placeholder="Order no, customer name or email..."
+          value={search}
+          onChange={resetPage(setSearch)}
+        />
+        <select className="input" value={status} onChange={resetPage(setStatus)}>
           <option value="">All order statuses</option>
           {ORDER_STATUSES.map((s) => (
             <option key={s} value={s}>
@@ -183,7 +195,7 @@ const Orders = () => {
             </option>
           ))}
         </select>
-        <select className="select" value={paymentStatus} onChange={resetPage(setPaymentStatus)}>
+        <select className="input" value={paymentStatus} onChange={resetPage(setPaymentStatus)}>
           <option value="">All payment statuses</option>
           {PAYMENT_STATUSES.map((s) => (
             <option key={s} value={s}>
@@ -193,10 +205,10 @@ const Orders = () => {
         </select>
       </div>
 
-      {error && <div className="error">{error}</div>}
+      {error && <div className="alert-error">{error}</div>}
 
-      <div className="table-wrap">
-        <table>
+      <div className="overflow-x-auto rounded-lg bg-surface shadow-card">
+        <table className="data-table">
           <thead>
             <tr>
               <th>Order</th>
@@ -213,11 +225,11 @@ const Orders = () => {
               <tr key={order.id}>
                 <td>
                   <div>{order.orderNumber}</div>
-                  <div className="muted">{formatDateTime(order.createdAt)}</div>
+                  <div className="text-muted">{formatDateTime(order.createdAt)}</div>
                 </td>
                 <td>
                   <div>{order.user.name}</div>
-                  <div className="muted">{order.user.email}</div>
+                  <div className="text-muted">{order.user.email}</div>
                 </td>
                 <td>{order._count.items}</td>
                 <td>{formatMoney(order.totalAmount)}</td>
@@ -236,8 +248,8 @@ const Orders = () => {
             ))}
           </tbody>
         </table>
-        {loading && <div className="loading">Loading...</div>}
-        {!loading && data?.items.length === 0 && <div className="empty">No orders found</div>}
+        {loading && <div className="p-10 text-center text-muted">Loading...</div>}
+        {!loading && data?.items.length === 0 && <div className="p-6 text-center text-muted">No orders found</div>}
       </div>
 
       <Pagination pagination={data?.pagination} onChange={setPage} />

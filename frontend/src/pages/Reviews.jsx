@@ -39,12 +39,12 @@ const Reviews = () => {
 
   return (
     <>
-      <div className="page-header">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 [&>h1]:text-xl [&>h1]:font-bold sm:[&>h1]:text-[22px]">
         <h1>Reviews</h1>
       </div>
 
-      <div className="toolbar">
-        <select className="select" value={rating} onChange={resetPage(setRating)}>
+      <div className="mb-4 flex flex-wrap gap-2 [&>*]:w-full [&>*]:min-w-0 sm:[&>*]:w-auto sm:[&>*]:min-w-[180px]">
+        <select className="input" value={rating} onChange={resetPage(setRating)}>
           <option value="">All ratings</option>
           {[5, 4, 3, 2, 1].map((r) => (
             <option key={r} value={r}>
@@ -52,17 +52,17 @@ const Reviews = () => {
             </option>
           ))}
         </select>
-        <select className="select" value={isVerified} onChange={resetPage(setIsVerified)}>
+        <select className="input" value={isVerified} onChange={resetPage(setIsVerified)}>
           <option value="">All reviews</option>
           <option value="true">Verified</option>
           <option value="false">Unverified</option>
         </select>
       </div>
 
-      {error && <div className="error">{error}</div>}
+      {error && <div className="alert-error">{error}</div>}
 
-      <div className="table-wrap">
-        <table>
+      <div className="overflow-x-auto rounded-lg bg-surface shadow-card">
+        <table className="data-table">
           <thead>
             <tr>
               <th>Product</th>
@@ -80,10 +80,15 @@ const Reviews = () => {
                 <td>{review.product.name}</td>
                 <td>
                   <div>{review.user.name}</div>
-                  <div className="muted">{review.user.email}</div>
+                  <div className="text-muted">{review.user.email}</div>
                 </td>
-                <td>{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</td>
-                <td style={{ whiteSpace: "normal", maxWidth: 320 }}>{review.comment || <span className="muted">-</span>}</td>
+                <td>
+                  {"★".repeat(review.rating)}
+                  {"☆".repeat(5 - review.rating)}
+                </td>
+                <td style={{ whiteSpace: "normal", maxWidth: 320 }}>
+                  {review.comment || <span className="text-muted">-</span>}
+                </td>
                 <td>
                   <span className={`badge ${review.isVerified ? "badge-success" : ""}`}>
                     {review.isVerified ? "Verified" : "No"}
@@ -91,11 +96,19 @@ const Reviews = () => {
                 </td>
                 <td>{formatDate(review.createdAt)}</td>
                 <td>
-                  <div className="actions">
-                    <button className="btn btn-outline btn-sm" disabled={busyId === review.id} onClick={() => toggleVerified(review)}>
+                  <div className="flex gap-1.5">
+                    <button
+                      className="btn btn-outline btn-sm"
+                      disabled={busyId === review.id}
+                      onClick={() => toggleVerified(review)}
+                    >
                       {review.isVerified ? "Unverify" : "Verify"}
                     </button>
-                    <button className="btn btn-danger btn-sm" disabled={busyId === review.id} onClick={() => remove(review)}>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      disabled={busyId === review.id}
+                      onClick={() => remove(review)}
+                    >
                       Delete
                     </button>
                   </div>
@@ -104,8 +117,8 @@ const Reviews = () => {
             ))}
           </tbody>
         </table>
-        {loading && <div className="loading">Loading...</div>}
-        {!loading && data?.items.length === 0 && <div className="empty">No reviews found</div>}
+        {loading && <div className="p-10 text-center text-muted">Loading...</div>}
+        {!loading && data?.items.length === 0 && <div className="p-6 text-center text-muted">No reviews found</div>}
       </div>
 
       <Pagination pagination={data?.pagination} onChange={setPage} />

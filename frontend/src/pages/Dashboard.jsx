@@ -11,9 +11,14 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="page-header">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 [&>h1]:text-xl [&>h1]:font-bold sm:[&>h1]:text-[22px]">
         <h1>Dashboard</h1>
-        <select className="select" style={{ width: "auto" }} value={days} onChange={(e) => setDays(Number(e.target.value))}>
+        <select
+          className="input"
+          style={{ width: "auto" }}
+          value={days}
+          onChange={(e) => setDays(Number(e.target.value))}
+        >
           {PERIODS.map((p) => (
             <option key={p} value={p}>
               Last {p} days
@@ -22,41 +27,41 @@ const Dashboard = () => {
         </select>
       </div>
 
-      {error && <div className="error">{error}</div>}
-      {loading && !data && <div className="loading">Loading...</div>}
+      {error && <div className="alert-error">{error}</div>}
+      {loading && !data && <div className="p-10 text-center text-muted">Loading...</div>}
 
       {data && (
         <>
-          <div className="stats">
-            <div className="card">
-              <div className="stat-label">Revenue</div>
-              <div className="stat-value">{formatMoney(data.revenue.inPeriod)}</div>
-              <div className="stat-sub">{formatMoney(data.revenue.total)} all time</div>
+          <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fit,minmax(180px,1fr))] sm:gap-4">
+            <div className="min-w-0 overflow-x-auto rounded-lg bg-surface p-4 shadow-card">
+              <div className="text-[13px] text-muted">Revenue</div>
+              <div className="mt-1.5 text-xl font-bold sm:text-2xl">{formatMoney(data.revenue.inPeriod)}</div>
+              <div className="mt-1 text-xs text-muted">{formatMoney(data.revenue.total)} all time</div>
             </div>
-            <div className="card">
-              <div className="stat-label">Orders</div>
-              <div className="stat-value">{data.orders.inPeriod}</div>
-              <div className="stat-sub">{data.orders.total} all time</div>
+            <div className="min-w-0 overflow-x-auto rounded-lg bg-surface p-4 shadow-card">
+              <div className="text-[13px] text-muted">Orders</div>
+              <div className="mt-1.5 text-xl font-bold sm:text-2xl">{data.orders.inPeriod}</div>
+              <div className="mt-1 text-xs text-muted">{data.orders.total} all time</div>
             </div>
-            <div className="card">
-              <div className="stat-label">Customers</div>
-              <div className="stat-value">{data.users.total}</div>
-              <div className="stat-sub">{data.users.newInPeriod} new in period</div>
+            <div className="min-w-0 overflow-x-auto rounded-lg bg-surface p-4 shadow-card">
+              <div className="text-[13px] text-muted">Customers</div>
+              <div className="mt-1.5 text-xl font-bold sm:text-2xl">{data.users.total}</div>
+              <div className="mt-1 text-xs text-muted">{data.users.newInPeriod} new in period</div>
             </div>
-            <div className="card">
-              <div className="stat-label">Products</div>
-              <div className="stat-value">{data.products.active}</div>
-              <div className="stat-sub">{data.products.total} total</div>
+            <div className="min-w-0 overflow-x-auto rounded-lg bg-surface p-4 shadow-card">
+              <div className="text-[13px] text-muted">Products</div>
+              <div className="mt-1.5 text-xl font-bold sm:text-2xl">{data.products.active}</div>
+              <div className="mt-1 text-xs text-muted">{data.products.total} total</div>
             </div>
           </div>
 
-          <div className="grid-2">
-            <div className="card">
-              <h3>Orders by status</h3>
+          <div className="mb-4 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))]">
+            <div className="min-w-0 overflow-x-auto rounded-lg bg-surface p-4 shadow-card">
+              <h3 className="mb-3 text-[15px] font-semibold">Orders by status</h3>
               {Object.keys(data.orders.byStatus).length === 0 ? (
-                <div className="empty">No orders yet</div>
+                <div className="p-6 text-center text-muted">No orders yet</div>
               ) : (
-                <table>
+                <table className="data-table data-table-plain">
                   <tbody>
                     {Object.entries(data.orders.byStatus).map(([status, count]) => (
                       <tr key={status}>
@@ -71,12 +76,12 @@ const Dashboard = () => {
               )}
             </div>
 
-            <div className="card">
-              <h3>Top selling</h3>
+            <div className="min-w-0 overflow-x-auto rounded-lg bg-surface p-4 shadow-card">
+              <h3 className="mb-3 text-[15px] font-semibold">Top selling</h3>
               {data.topSelling.length === 0 ? (
-                <div className="empty">No sales in this period</div>
+                <div className="p-6 text-center text-muted">No sales in this period</div>
               ) : (
-                <table>
+                <table className="data-table data-table-plain">
                   <thead>
                     <tr>
                       <th>Product</th>
@@ -98,13 +103,13 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="grid-2">
-            <div className="card">
-              <h3>Recent orders</h3>
+          <div className="mb-4 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))]">
+            <div className="min-w-0 overflow-x-auto rounded-lg bg-surface p-4 shadow-card">
+              <h3 className="mb-3 text-[15px] font-semibold">Recent orders</h3>
               {data.orders.recent.length === 0 ? (
-                <div className="empty">No orders yet</div>
+                <div className="p-6 text-center text-muted">No orders yet</div>
               ) : (
-                <table>
+                <table className="data-table data-table-plain">
                   <thead>
                     <tr>
                       <th>Order</th>
@@ -118,7 +123,7 @@ const Dashboard = () => {
                       <tr key={order.id}>
                         <td>
                           <div>{order.orderNumber}</div>
-                          <div className="muted">{formatDateTime(order.createdAt)}</div>
+                          <div className="text-muted">{formatDateTime(order.createdAt)}</div>
                         </td>
                         <td>{order.user?.name}</td>
                         <td>{formatMoney(order.totalAmount)}</td>
@@ -132,12 +137,12 @@ const Dashboard = () => {
               )}
             </div>
 
-            <div className="card">
-              <h3>Low stock</h3>
+            <div className="min-w-0 overflow-x-auto rounded-lg bg-surface p-4 shadow-card">
+              <h3 className="mb-3 text-[15px] font-semibold">Low stock</h3>
               {data.products.lowStock.length === 0 ? (
-                <div className="empty">All products are well stocked</div>
+                <div className="p-6 text-center text-muted">All products are well stocked</div>
               ) : (
-                <table>
+                <table className="data-table data-table-plain">
                   <thead>
                     <tr>
                       <th>Product</th>
@@ -148,8 +153,17 @@ const Dashboard = () => {
                     {data.products.lowStock.map((p) => (
                       <tr key={p.id}>
                         <td>
-                          <span className="tooltip" data-tooltip={`SKU: ${p.sku}`} tabIndex={0}>
+                          <span
+                            className="group relative cursor-default border-b border-dashed border-line focus:outline-none"
+                            tabIndex={0}
+                          >
                             {p.name}
+                            <span
+                              role="tooltip"
+                              className="pointer-events-none invisible absolute bottom-[calc(100%+6px)] left-0 z-[15] translate-y-0.5 rounded-md bg-black px-2 py-1 text-xs font-medium whitespace-nowrap text-white opacity-0 transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:visible group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
+                            >
+                              SKU: {p.sku}
+                            </span>
                           </span>
                         </td>
                         <td>

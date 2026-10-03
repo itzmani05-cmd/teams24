@@ -77,14 +77,14 @@ const Categories = () => {
 
   return (
     <>
-      <div className="page-header">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 [&>h1]:text-xl [&>h1]:font-bold sm:[&>h1]:text-[22px]">
         <h1>Categories</h1>
-        <button className="btn" onClick={openCreate}>
+        <button className="btn btn-primary" onClick={openCreate}>
           + Add category
         </button>
       </div>
 
-      <div className="toolbar">
+      <div className="mb-4 flex flex-wrap gap-2 [&>*]:w-full [&>*]:min-w-0 sm:[&>*]:w-auto sm:[&>*]:min-w-[180px]">
         <input
           className="input"
           placeholder="Search categories..."
@@ -96,29 +96,29 @@ const Categories = () => {
         />
       </div>
 
-      {error && <div className="error">{error}</div>}
+      {error && <div className="alert-error">{error}</div>}
 
-      <div className="table-wrap">
-        <table>
+      <div className="overflow-x-auto rounded-lg bg-surface shadow-card">
+        <table className="data-table">
           <thead>
             <tr>
               <th>Name</th>
               <th>Slug</th>
               <th>Products</th>
               <th>Status</th>
-              <th className="col-actions">Actions</th>
+              <th className="w-[1%] text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             {data?.items.map((category) => (
               <tr key={category.id}>
                 <td>{category.name}</td>
-                <td className="muted">{category.slug}</td>
+                <td className="text-muted">{category.slug}</td>
                 <td>{category._count.products}</td>
                 <td>
                   <StatusBadge status={category.isActive ? "active" : "inactive"} />
                 </td>
-                <td className="col-actions">
+                <td className="w-[1%] text-center">
                   <ActionMenu
                     items={[
                       { label: "Edit", onClick: () => openEdit(category) },
@@ -130,8 +130,8 @@ const Categories = () => {
             ))}
           </tbody>
         </table>
-        {loading && <div className="loading">Loading...</div>}
-        {!loading && data?.items.length === 0 && <div className="empty">No categories found</div>}
+        {loading && <div className="p-10 text-center text-muted">Loading...</div>}
+        {!loading && data?.items.length === 0 && <div className="p-6 text-center text-muted">No categories found</div>}
       </div>
 
       <Pagination pagination={data?.pagination} onChange={setPage} />
@@ -139,7 +139,7 @@ const Categories = () => {
       {editing && (
         <Modal title={editing === "new" ? "Add category" : "Edit category"} onClose={() => setEditing(null)}>
           <form onSubmit={handleSubmit}>
-            {formError && <div className="error">{formError}</div>}
+            {formError && <div className="alert-error">{formError}</div>}
             <div className="field">
               <label>Name</label>
               <input className="input" name="name" value={form.name} onChange={handleChange} required />
@@ -156,21 +156,26 @@ const Categories = () => {
             </div>
             <div className="field">
               <label>Description</label>
-              <textarea className="textarea" name="description" value={form.description} onChange={handleChange} />
+              <textarea
+                className="input min-h-20 resize-y"
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+              />
             </div>
             <div className="field">
               <label>Image URL</label>
               <input className="input" name="imageUrl" type="url" value={form.imageUrl} onChange={handleChange} />
             </div>
-            <label className="checkbox">
+            <label className="mb-3 flex items-center gap-2">
               <input type="checkbox" name="isActive" checked={form.isActive} onChange={handleChange} />
               Active
             </label>
-            <div className="modal-footer">
+            <div className="mt-2 flex justify-end gap-2">
               <button type="button" className="btn btn-outline" onClick={() => setEditing(null)}>
                 Cancel
               </button>
-              <button type="submit" className="btn" disabled={saving}>
+              <button type="submit" className="btn btn-primary" disabled={saving}>
                 {saving ? "Saving..." : "Save"}
               </button>
             </div>

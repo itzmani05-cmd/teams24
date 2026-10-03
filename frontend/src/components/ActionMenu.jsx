@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
+const DEFAULT_TRIGGER =
+  "grid size-8 cursor-pointer place-items-center rounded-lg border border-transparent text-xl leading-none text-muted hover:border-line hover:bg-canvas hover:text-ink disabled:cursor-not-allowed disabled:opacity-40";
+
 const ActionMenu = ({
   items,
   disabled = false,
   trigger = "⋮",
-  triggerClassName = "action-trigger",
+  triggerClassName = DEFAULT_TRIGGER,
+  openClassName = "border-line bg-canvas text-ink",
   label = "Actions",
   header = null,
   width = 140,
@@ -54,7 +58,7 @@ const ActionMenu = ({
       <button
         ref={buttonRef}
         type="button"
-        className={`${triggerClassName} ${position ? "open" : ""}`}
+        className={`${triggerClassName} ${position ? openClassName : ""}`}
         onClick={toggle}
         disabled={disabled}
         aria-label={label}
@@ -65,14 +69,21 @@ const ActionMenu = ({
       </button>
       {position &&
         createPortal(
-          <div ref={menuRef} className="action-menu" role="menu" style={{ ...position, width }}>
-            {header && <div className="action-menu-header">{header}</div>}
+          <div
+            ref={menuRef}
+            role="menu"
+            className="fixed z-20 rounded-lg border border-line bg-surface p-1 shadow-menu"
+            style={{ ...position, width }}
+          >
+            {header && <div className="mb-1 truncate border-b border-line px-3 pt-2 pb-2.5 text-[13px]">{header}</div>}
             {items.map((item) => (
               <button
                 key={item.label}
                 type="button"
                 role="menuitem"
-                className={`action-menu-item ${item.danger ? "danger" : ""}`}
+                className={`block w-full cursor-pointer rounded-md px-3 py-2 text-left ${
+                  item.danger ? "text-danger hover:bg-danger-soft" : "text-ink hover:bg-canvas"
+                }`}
                 onClick={() => {
                   close();
                   item.onClick();
@@ -82,7 +93,7 @@ const ActionMenu = ({
               </button>
             ))}
           </div>,
-          document.body
+          document.body,
         )}
     </>
   );

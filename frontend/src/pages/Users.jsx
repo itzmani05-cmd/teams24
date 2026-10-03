@@ -37,28 +37,28 @@ const Users = () => {
 
   return (
     <>
-      <div className="page-header">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 [&>h1]:text-xl [&>h1]:font-bold sm:[&>h1]:text-[22px]">
         <h1>Users</h1>
       </div>
 
-      <div className="toolbar">
+      <div className="mb-4 flex flex-wrap gap-2 [&>*]:w-full [&>*]:min-w-0 sm:[&>*]:w-auto sm:[&>*]:min-w-[180px]">
         <input className="input" placeholder="Name, email or phone..." value={search} onChange={resetPage(setSearch)} />
-        <select className="select" value={role} onChange={resetPage(setRole)}>
+        <select className="input" value={role} onChange={resetPage(setRole)}>
           <option value="">All roles</option>
           <option value="customer">Customer</option>
           <option value="admin">Admin</option>
         </select>
-        <select className="select" value={isActive} onChange={resetPage(setIsActive)}>
+        <select className="input" value={isActive} onChange={resetPage(setIsActive)}>
           <option value="">All statuses</option>
           <option value="true">Active</option>
           <option value="false">Inactive</option>
         </select>
       </div>
 
-      {error && <div className="error">{error}</div>}
+      {error && <div className="alert-error">{error}</div>}
 
-      <div className="table-wrap">
-        <table>
+      <div className="overflow-x-auto rounded-lg bg-surface shadow-card">
+        <table className="data-table">
           <thead>
             <tr>
               <th>Name</th>
@@ -67,7 +67,7 @@ const Users = () => {
               <th>Orders</th>
               <th>Status</th>
               <th>Joined</th>
-              <th className="col-actions">Actions</th>
+              <th className="w-[1%] text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -78,7 +78,7 @@ const Users = () => {
                 <tr key={user.id}>
                   <td>
                     <div>{user.name}</div>
-                    <div className="muted">{user.email}</div>
+                    <div className="text-muted">{user.email}</div>
                   </td>
                   <td>{user.phone || "-"}</td>
                   <td>
@@ -89,9 +89,9 @@ const Users = () => {
                     <StatusBadge status={user.isActive ? "active" : "inactive"} />
                   </td>
                   <td>{formatDate(user.createdAt)}</td>
-                  <td className="col-actions">
+                  <td className="w-[1%] text-center">
                     {isSelf ? (
-                      <span className="muted">You</span>
+                      <span className="text-muted">You</span>
                     ) : (
                       <ActionMenu
                         disabled={busy}
@@ -110,7 +110,7 @@ const Users = () => {
                               updateUser(
                                 user,
                                 { isActive: !user.isActive },
-                                `${user.isActive ? "Deactivate" : "Activate"} ${user.name}?`
+                                `${user.isActive ? "Deactivate" : "Activate"} ${user.name}?`,
                               ),
                           },
                         ]}
@@ -122,8 +122,8 @@ const Users = () => {
             })}
           </tbody>
         </table>
-        {loading && <div className="loading">Loading...</div>}
-        {!loading && data?.items.length === 0 && <div className="empty">No users found</div>}
+        {loading && <div className="p-10 text-center text-muted">Loading...</div>}
+        {!loading && data?.items.length === 0 && <div className="p-6 text-center text-muted">No users found</div>}
       </div>
 
       <Pagination pagination={data?.pagination} onChange={setPage} />

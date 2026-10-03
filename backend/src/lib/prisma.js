@@ -4,10 +4,11 @@ const { PrismaPg } = require("@prisma/adapter-pg");
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
-  max: Number(process.env.DB_POOL_MAX) || 10,
+  max: Number(process.env.DB_POOL_MAX) || 5,
   idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT_MS) || 5 * 60 * 1000,
   connectionTimeoutMillis: 15000,
   keepAlive: true,
+  options: "-c idle_session_timeout=600000",
 });
 
 const globalForPrisma = globalThis;

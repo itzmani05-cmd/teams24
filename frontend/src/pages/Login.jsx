@@ -27,15 +27,15 @@ const Login = () => {
   };
 
   return (
-    <div className="login-page">
-      <form className="login-card" onSubmit={handleSubmit}>
-        <div className="brand login-brand">
-          Teams<span>24</span>
+    <div className="grid min-h-screen place-items-center p-4">
+      <form className="w-full max-w-[380px] rounded-lg bg-surface p-8 shadow-card" onSubmit={handleSubmit}>
+        <div className="mb-5 text-[26px] font-extrabold tracking-tight text-black">
+          Teams<span className="text-primary">24</span>
         </div>
-        <h1>Admin Login</h1>
-        <p className="muted">Sign in to manage the Teams24 store</p>
+        <h1 className="mb-1 text-[22px] font-bold">Admin Login</h1>
+        <p className="mb-6 text-muted">Sign in to manage the Teams24 store</p>
 
-        {error && <div className="error">{error}</div>}
+        {error && <div className="alert-error">{error}</div>}
 
         <div className="field">
           <label htmlFor="email">Email</label>
@@ -64,7 +64,7 @@ const Login = () => {
           />
         </div>
 
-        <button type="submit" className="btn" disabled={submitting}>
+        <button type="submit" className="btn btn-primary w-full" disabled={submitting}>
           {submitting ? "Signing in..." : "Sign in"}
         </button>
       </form>

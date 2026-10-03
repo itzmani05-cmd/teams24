@@ -8,10 +8,29 @@ import Categories from "./pages/Categories";
 import Orders from "./pages/Orders";
 import Users from "./pages/Users";
 import Reviews from "./pages/Reviews";
+import StoreLayout from "./store/components/StoreLayout";
+import Home from "./store/pages/Home";
+import Shop from "./store/pages/Shop";
+import StoreCategories from "./store/pages/Categories";
+import ProductDetail from "./store/pages/ProductDetail";
+import Cart from "./store/pages/Cart";
+import Checkout from "./store/pages/Checkout";
+import OrderSuccess from "./store/pages/OrderSuccess";
+import Auth from "./store/pages/Auth";
+import NotFound from "./store/pages/NotFound";
+import {
+  AccountLayout,
+  AccountSettings,
+  Addresses,
+  MyOrders,
+  OrderDetails,
+  Profile,
+  Wishlist,
+} from "./store/pages/Account";
 
 const RequireAdmin = ({ children }) => {
   const { user, loading } = useAuth();
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <div className="p-10 text-center text-muted">Loading...</div>;
   if (!user) return <Navigate to="/admin/login" replace />;
   return children;
 };
@@ -34,7 +53,30 @@ const App = () => (
       <Route path="users" element={<Users />} />
       <Route path="reviews" element={<Reviews />} />
     </Route>
-    <Route path="*" element={<Navigate to="/admin" replace />} />
+    <Route path="/admin/*" element={<Navigate to="/admin" replace />} />
+
+    <Route element={<StoreLayout />}>
+      <Route index element={<Home />} />
+      <Route path="shop" element={<Shop key="shop" />} />
+      <Route path="deals" element={<Shop key="deals" deals />} />
+      <Route path="categories" element={<StoreCategories />} />
+      <Route path="product/:slug" element={<ProductDetail />} />
+      <Route path="cart" element={<Cart />} />
+      <Route path="checkout" element={<Checkout />} />
+      <Route path="order-success/:orderNumber" element={<OrderSuccess />} />
+      <Route path="login" element={<Auth key="login" mode="login" />} />
+      <Route path="register" element={<Auth key="register" mode="register" />} />
+      <Route path="account" element={<AccountLayout />}>
+        <Route index element={<Navigate to="orders" replace />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="orders" element={<MyOrders />} />
+        <Route path="orders/:orderNumber" element={<OrderDetails />} />
+        <Route path="addresses" element={<Addresses />} />
+        <Route path="wishlist" element={<Wishlist />} />
+        <Route path="settings" element={<AccountSettings />} />
+      </Route>
+      <Route path="*" element={<NotFound />} />
+    </Route>
   </Routes>
 );
 
