@@ -11,7 +11,11 @@
     "postinstall": "prisma generate",
     "server": "nodemon backend/src/server.js",
     "start": "node backend/src/server.js",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "client": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "dev": "concurrently -n api,web -c blue,green \"npm run server\" \"npm run client\""
   },
   "keywords": [],
   "author": "",
@@ -28,6 +32,7 @@
     "pg": "^8.23.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "react-router": "^7.18.4",
     "zod": "^4.6.5"
   },
   "devDependencies": {
