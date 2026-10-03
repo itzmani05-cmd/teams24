@@ -26,3 +26,9 @@ Thumbs.db
 # Misc
 coverage/
 .cache/
+
+
+.claude/
+.agents/
+.windsurf/
+skills-lock.json
