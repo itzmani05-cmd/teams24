@@ -1,5 +1,6 @@
 const prisma = require("../lib/prisma");
 const AppError = require("../utils/AppError");
+const { removeImageByUrl } = require("../lib/storage");
 const { slugify, getPagination, paginated } = require("../utils/helpers");
 
 const SORTS = {
@@ -166,7 +167,9 @@ const remove = async (req, res) => {
       message: "Product has order history, so it was deactivated instead of deleted",
     });
   }
-  await prisma.product.delete({ where: { id: req.params.id } });
+  const product = await prisma.product.delete({ where: { id: req.params.id }, include: { images: true } });
+  const urls = new Set([product.thumbnailUrl, ...product.images.map((img) => img.imageUrl)]);
+  await Promise.all([...urls].map(removeImageByUrl));
   res.json({ success: true, message: "Product deleted" });
 };
 
@@ -194,10 +197,14 @@ const addImages = async (req, res) => {
 };
 
 const removeImage = async (req, res) => {
-  const { count } = await prisma.productImage.deleteMany({
+  const image = await prisma.productImage.findFirst({
     where: { id: req.params.imageId, productId: req.params.id },
+    include: { product: { select: { thumbnailUrl: true } } },
   });
-  if (!count) throw AppError.notFound("Image not found");
+  if (!image) throw AppError.notFound("Image not found");
+
+  await prisma.productImage.delete({ where: { id: image.id } });
+  if (image.product.thumbnailUrl !== image.imageUrl) await removeImageByUrl(image.imageUrl);
   res.json({ success: true, message: "Image deleted" });
 };
 

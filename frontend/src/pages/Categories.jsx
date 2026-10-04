@@ -5,6 +5,7 @@ import Modal from "../components/Modal";
 import ActionMenu from "../components/ActionMenu";
 import Pagination from "../components/Pagination";
 import StatusBadge from "../components/StatusBadge";
+import { ImageField } from "../components/ImageUpload";
 
 const emptyForm = { name: "", slug: "", description: "", imageUrl: "", isActive: true };
 
@@ -163,10 +164,13 @@ const Categories = () => {
                 onChange={handleChange}
               />
             </div>
-            <div className="field">
-              <label>Image URL</label>
-              <input className="input" name="imageUrl" type="url" value={form.imageUrl} onChange={handleChange} />
-            </div>
+            <ImageField
+              label="Image"
+              name="imageUrl"
+              value={form.imageUrl}
+              onChange={handleChange}
+              folder="categories"
+            />
             <label className="mb-3 flex items-center gap-2">
               <input type="checkbox" name="isActive" checked={form.isActive} onChange={handleChange} />
               Active

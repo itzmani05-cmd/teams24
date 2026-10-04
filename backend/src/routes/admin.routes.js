@@ -4,6 +4,7 @@ const category = require("../controllers/category.controller");
 const product = require("../controllers/product.controller");
 const order = require("../controllers/order.controller");
 const review = require("../controllers/review.controller");
+const upload = require("../controllers/upload.controller");
 const catalogV = require("../validations/catalog.validation");
 const orderV = require("../validations/order.validation");
 const reviewV = require("../validations/review.validation");
@@ -12,6 +13,7 @@ const { idParam } = require("../validations/common");
 const validate = require("../middleware/validate");
 const { authenticate, authorizeRoles, requirePermission: can } = require("../middleware/auth");
 const { PERMISSIONS: P } = require("../config/roles");
+const { singleImage } = require("../middleware/upload");
 
 const router = Router();
 
@@ -22,6 +24,14 @@ router.get("/dashboard", can(P.DASHBOARD_VIEW), validate({ query: userV.dashboar
 router.get("/users", can(P.USER_READ), validate({ query: userV.listUsersQuery }), admin.listUsers);
 router.get("/users/:id", can(P.USER_READ), validate({ params: idParam }), admin.getUser);
 router.patch("/users/:id", can(P.USER_MANAGE), validate({ params: idParam, body: userV.updateUser }), admin.updateUser);
+
+router.post(
+  "/uploads",
+  can(P.PRODUCT_MANAGE),
+  validate({ query: catalogV.uploadQuery }),
+  singleImage("image"),
+  upload.uploadOne
+);
 
 router.get("/categories", can(P.CATEGORY_MANAGE), validate({ query: catalogV.categoryQuery }), category.listAdmin);
 router.post("/categories", can(P.CATEGORY_MANAGE), validate({ body: catalogV.createCategory }), category.create);

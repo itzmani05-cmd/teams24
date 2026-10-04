@@ -76,6 +76,7 @@ const addImages = z.object({
 });
 
 const imageParams = z.object({ id: z.uuid(), imageId: z.uuid() });
+const uploadQuery = z.object({ folder: z.enum(["products", "categories"]).default("products") });
 const slugParam = z.object({ slug: z.string().trim().min(1) });
 
 module.exports = {
@@ -87,5 +88,6 @@ module.exports = {
   productQuery,
   addImages,
   imageParams,
+  uploadQuery,
   slugParam,
 };

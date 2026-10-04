@@ -24,14 +24,15 @@ export const createApiClient = (tokenKey) => {
   };
 
   const request = async (method, path, { body, params } = {}) => {
-    const headers = { "Content-Type": "application/json" };
+    const isForm = body instanceof FormData;
+    const headers = isForm ? {} : { "Content-Type": "application/json" };
     const token = getToken();
     if (token) headers.Authorization = `Bearer ${token}`;
 
     const res = await fetch(`/api${path}${buildQuery(params)}`, {
       method,
       headers,
-      body: body ? JSON.stringify(body) : undefined,
+      body: isForm ? body : body ? JSON.stringify(body) : undefined,
     });
 
     const data = await res.json().catch(() => ({}));
@@ -54,6 +55,11 @@ export const createApiClient = (tokenKey) => {
     post: (path, body) => request("POST", path, { body }),
     patch: (path, body) => request("PATCH", path, { body }),
     delete: (path) => request("DELETE", path),
+    upload: (path, file, params) => {
+      const body = new FormData();
+      body.append("image", file);
+      return request("POST", path, { body, params });
+    },
   };
 
   return { api, getToken, setToken, clearToken, setUnauthorizedHandler };

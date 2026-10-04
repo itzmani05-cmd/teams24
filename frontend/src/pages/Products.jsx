@@ -5,6 +5,7 @@ import Modal from "../components/Modal";
 import ActionMenu from "../components/ActionMenu";
 import Pagination from "../components/Pagination";
 import StatusBadge from "../components/StatusBadge";
+import { GalleryEditor, ImageField } from "../components/ImageUpload";
 import { formatMoney } from "../utils/format";
 
 const emptyForm = {
@@ -17,33 +18,23 @@ const emptyForm = {
   discountPrice: "",
   stock: "0",
   thumbnailUrl: "",
-  images: "",
   description: "",
   isActive: true,
 };
 
-const toPayload = (form, isNew) => {
-  const payload = {
-    name: form.name,
-    slug: form.slug || undefined,
-    sku: form.sku,
-    categoryId: form.categoryId,
-    brand: form.brand || null,
-    price: Number(form.price),
-    discountPrice: form.discountPrice === "" ? null : Number(form.discountPrice),
-    stock: Number(form.stock),
-    thumbnailUrl: form.thumbnailUrl || null,
-    description: form.description || null,
-    isActive: form.isActive,
-  };
-  if (isNew) {
-    payload.images = form.images
-      .split("\n")
-      .map((url) => url.trim())
-      .filter(Boolean);
-  }
-  return payload;
-};
+const toPayload = (form) => ({
+  name: form.name,
+  slug: form.slug || undefined,
+  sku: form.sku,
+  categoryId: form.categoryId,
+  brand: form.brand || null,
+  price: Number(form.price),
+  discountPrice: form.discountPrice === "" ? null : Number(form.discountPrice),
+  stock: Number(form.stock),
+  thumbnailUrl: form.thumbnailUrl || null,
+  description: form.description || null,
+  isActive: form.isActive,
+});
 
 const Products = () => {
   const [page, setPage] = useState(1);
@@ -58,9 +49,11 @@ const Products = () => {
   const [form, setForm] = useState(emptyForm);
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [gallery, setGallery] = useState([]);
 
   const openCreate = () => {
     setForm(emptyForm);
+    setGallery([]);
     setFormError("");
     setEditing("new");
   };
@@ -76,12 +69,35 @@ const Products = () => {
       discountPrice: product.discountPrice ? String(product.discountPrice) : "",
       stock: String(product.stock),
       thumbnailUrl: product.thumbnailUrl || "",
-      images: "",
       description: product.description || "",
       isActive: product.isActive,
     });
     setFormError("");
+    setGallery([]);
     setEditing(product);
+    api
+      .get(`/admin/products/${product.id}`)
+      .then((p) => setGallery(p.images))
+      .catch((err) => setFormError(err.message));
+  };
+
+  // New products keep the gallery locally until saved; existing ones update immediately.
+  const addGalleryImage = async (imageUrl) => {
+    if (editing === "new") {
+      setGallery((g) => [...g, { imageUrl }]);
+    } else {
+      setGallery(await api.post(`/admin/products/${editing.id}/images`, { images: [{ imageUrl }] }));
+    }
+    setForm((f) => (f.thumbnailUrl ? f : { ...f, thumbnailUrl: imageUrl }));
+  };
+
+  const removeGalleryImage = async (image) => {
+    try {
+      if (editing !== "new") await api.delete(`/admin/products/${editing.id}/images/${image.id}`);
+      setGallery((g) => g.filter((img) => img !== image));
+    } catch (err) {
+      setFormError(err.message);
+    }
   };
 
   const handleChange = (e) => {
@@ -94,8 +110,11 @@ const Products = () => {
     setSaving(true);
     setFormError("");
     try {
-      if (editing === "new") await api.post("/admin/products", toPayload(form, true));
-      else await api.patch(`/admin/products/${editing.id}`, toPayload(form, false));
+      if (editing === "new") {
+        await api.post("/admin/products", { ...toPayload(form), images: gallery.map((img) => img.imageUrl) });
+      } else {
+        await api.patch(`/admin/products/${editing.id}`, toPayload(form));
+      }
       setEditing(null);
       reload();
     } catch (err) {
@@ -301,28 +320,15 @@ const Products = () => {
                   required
                 />
               </div>
-              <div className="field">
-                <label>Thumbnail URL</label>
-                <input
-                  className="input"
-                  name="thumbnailUrl"
-                  type="url"
-                  value={form.thumbnailUrl}
-                  onChange={handleChange}
-                />
-              </div>
             </div>
-            {editing === "new" && (
-              <div className="field">
-                <label>Gallery image URLs (one per line)</label>
-                <textarea
-                  className="input min-h-20 resize-y"
-                  name="images"
-                  value={form.images}
-                  onChange={handleChange}
-                />
-              </div>
-            )}
+            <ImageField label="Thumbnail" name="thumbnailUrl" value={form.thumbnailUrl} onChange={handleChange} />
+            <GalleryEditor
+              images={gallery}
+              thumbnailUrl={form.thumbnailUrl}
+              onAdd={addGalleryImage}
+              onRemove={removeGalleryImage}
+              onSetThumbnail={(url) => setForm((f) => ({ ...f, thumbnailUrl: url }))}
+            />
             <div className="field">
               <label>Description</label>
               <textarea
