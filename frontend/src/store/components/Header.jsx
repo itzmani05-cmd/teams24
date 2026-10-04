@@ -73,7 +73,7 @@ const Header = () => {
           <Logo />
         </Link>
 
-        <nav className="hidden gap-[22px] lg:flex">
+        <nav className="hidden gap-7 lg:ml-10 lg:flex">
           <NavLink to="/shop" end className={navClass}>
             Shop
           </NavLink>

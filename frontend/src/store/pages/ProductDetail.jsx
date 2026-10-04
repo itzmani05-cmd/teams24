@@ -106,7 +106,7 @@ const ProductView = ({ product, onReviewed }) => {
         ]}
       />
 
-      <div className="grid gap-7 md:grid-cols-[1.05fr_1fr] lg:gap-10">
+      <div className="grid gap-7 md:grid-cols-[minmax(0,460px)_1fr] lg:gap-12">
         <div className="mx-auto grid w-full max-w-[560px] gap-3 md:sticky md:top-[84px] md:mx-0 md:max-w-none md:grid-cols-[76px_1fr] md:self-start">
           <div className="order-2 flex gap-2.5 overflow-x-auto md:order-none md:flex-col md:overflow-visible [&>button]:w-[72px] [&>button]:shrink-0 [&>button]:cursor-pointer [&>button]:overflow-hidden [&>button]:rounded-[10px] [&>button]:border-2 [&>button]:border-transparent md:[&>button]:w-auto [&>button.active]:border-primary [&_img]:block [&_img]:aspect-square [&_img]:w-full [&_img]:object-cover">
             {product.images.length > 1 &&
