@@ -76,6 +76,63 @@ This starts both servers:
 
 Vite proxies `/api` requests to the backend, so the frontend and API work together in development.
 
+## Running with Docker
+
+The Docker setup builds the React app and serves it from the Express server, so everything runs on one port.
+
+1. Create `.env` as described above.
+2. **Supabase users:** use the **Session pooler** connection string for `DATABASE_URL` (Supabase → **Connect** → *Session pooler*). It looks like:
+
+   ```
+   postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres
+   ```
+
+   The default *Direct connection* host (`db.<project-ref>.supabase.co`) is IPv6-only, and Docker Desktop cannot reach IPv6 addresses, so the container fails with `P1001: Can't reach database server`.
+
+   If your password contains special characters such as `@`, `:`, `/` or `#`, URL-encode them (for example `@` becomes `%40`), otherwise the connection string may be parsed incorrectly.
+3. **Start Docker Desktop** and wait until it shows *Engine running*. If it is not running, every `docker` command fails with:
+
+   ```
+   error during connect: ... open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+   ```
+
+   Tip: enable *Settings → General → Start Docker Desktop when you sign in* so you don't hit this again.
+4. Build and start:
+
+   ```bash
+   docker compose up --build        # run in the foreground (Ctrl+C to stop)
+   docker compose up --build -d     # or run in the background
+   ```
+
+   The `migrate` service applies database migrations first and then exits (`No pending migrations to apply.` is normal). The `app` service starts after it finishes successfully. On startup the logs show `API running on http://localhost:5000` and `Database connected`.
+5. Open <http://localhost:5000> (storefront) and <http://localhost:5000/admin/login> (admin).
+
+### Checking that it works
+
+```bash
+docker compose ps                         # app should show (healthy)
+curl http://localhost:5000/api/health     # {"success":true,"status":"ok"}
+```
+
+The image includes a health check that calls `/api/health` every 30 seconds.
+
+### Useful commands
+
+```bash
+docker compose run --rm migrate npx prisma db seed   # load admin + products.json
+docker compose logs -f app                           # follow API logs
+docker compose up --build -d                         # rebuild after code changes
+docker compose down                                  # stop and remove containers
+```
+
+Changes to `.env` take effect after `docker compose up -d` (no rebuild needed). Code changes need `--build`.
+
+| File                 | Purpose                                                                 |
+| -------------------- | ----------------------------------------------------------------------- |
+| `Dockerfile`         | Multi-stage build: install deps, build frontend, slim production image |
+| `docker-compose.yml` | `migrate` (runs migrations) and `app` (API + frontend on port 5000)     |
+| `.dockerignore`      | Keeps `node_modules`, `.env`, `.git` and build output out of the image  |
+
 ## Scripts
 
 | Command               | What it does                                           |
