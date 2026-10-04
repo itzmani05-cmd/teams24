@@ -40,6 +40,7 @@ export const normalizeCategory = (c) => ({
   slug: c.slug,
   description: c.description,
   icon: CATEGORY_ICONS[c.slug] || "Tag",
+  image: c.imageUrl,
   count: c._count?.products ?? 0,
 });
 

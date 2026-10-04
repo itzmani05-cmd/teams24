@@ -1,13 +1,11 @@
 import { Link } from "react-router";
-import { ArrowRight, Flame, Star } from "lucide-react";
+import { ArrowRight, Flame } from "lucide-react";
 import { useMemo } from "react";
 import { useCatalog } from "../context/CatalogContext";
 import { discountPercent } from "../utils/pricing";
-import { HERO_SLIDE_INTERVAL, heroSlides } from "../data/heroSlides";
 import FeatureStrip from "../components/FeatureStrip";
 import ProductCard from "../components/ProductCard";
 import CategoryIcon from "../components/CategoryIcon";
-import HeroBackground from "../components/HeroBackground";
 import DealOfTheDay from "../components/DealOfTheDay";
 import Newsletter from "../components/Newsletter";
 import Price from "../components/Price";
@@ -24,9 +22,12 @@ const buildHomeData = (products, categories, brands) => {
     featuredProducts,
     dealOfTheDay,
     maxDiscount: products.length ? Math.max(...products.map(discountPercent)) : 0,
-    spotlight: inStockDeals
-      .filter((p) => p.id !== dealOfTheDay?.id)
-      .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0) || byDiscount(a, b))[0],
+    // Best deal per category, so the hero shows a varied mix
+    heroProducts: [...inStockDeals]
+      .filter((p) => p.id !== dealOfTheDay?.id && p.thumbnail)
+      .sort(byDiscount)
+      .filter((p, i, list) => list.findIndex((q) => q.category?.slug === p.category?.slug) === i)
+      .slice(0, 3),
     promoBanners: categories
       .map((c) => ({ ...c, deal: inStockDeals.filter((p) => p.category?.slug === c.slug).sort(byDiscount)[0] }))
       .filter((c) => c.deal)
@@ -65,7 +66,7 @@ const productGrid = "grid grid-cols-2 gap-2.5 xs:gap-3 sm:grid-cols-3 sm:gap-[18
 
 const Home = () => {
   const { products, categories, brands, status, error, reload } = useCatalog();
-  const { featuredProducts, dealOfTheDay, maxDiscount, spotlight, promoBanners, bestSellers, topBrands } = useMemo(
+  const { featuredProducts, dealOfTheDay, maxDiscount, heroProducts, promoBanners, bestSellers, topBrands } = useMemo(
     () => buildHomeData(products, categories, brands),
     [products, categories, brands],
   );
@@ -73,82 +74,107 @@ const Home = () => {
 
   return (
     <>
-      <section className="relative flex min-h-[calc(100svh-104px)] flex-col overflow-hidden bg-black sm:min-h-[calc(100svh-64px)]">
-        <HeroBackground images={heroSlides} interval={HERO_SLIDE_INTERVAL} />
-        <div className="page-container relative z-[1] order-0 grid flex-1 items-center gap-5 py-6 sm:grid-cols-2 sm:gap-6 md:grid-cols-[1.1fr_1fr] md:gap-8 md:py-10 laptop-short:pt-[22px] laptop-short:pb-[18px] max-sm:short:gap-3.5 max-sm:short:pt-[18px] max-sm:short:pb-4 max-sm:tiny:pt-3 max-sm:tiny:pb-3">
-          <div>
-            <span className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-primary bg-black px-3 py-1.5 text-[11px] font-bold tracking-wide text-primary sm:mb-[18px] sm:text-xs laptop-short:mb-3 max-sm:short:mb-2">
-              <Flame size={14} />{" "}
-              {maxDiscount > 0 ? `Mega Sale · Up to ${maxDiscount}% off top brands` : "Top brands, great deals"}
-            </span>
-            <h1 className="text-[34px] leading-[1.1] font-extrabold tracking-[-0.03em] text-white xs:text-[40px] sm:text-[44px] md:text-[52px] lg:text-6xl">
-              Everything
-              <br />
-              You Need,
-              <br />
-              All in One Place
-            </h1>
-            <p className="my-3 max-w-[460px] text-[15px] text-smoke sm:mt-4 sm:mb-6 laptop-short:mt-3 laptop-short:mb-[18px] max-sm:short:mt-2 max-sm:short:mb-3.5">
-              Discover top brands, great deals, and a better shopping experience — with free shipping over ₹500 and easy
-              7-day returns.
-            </p>
-            <div className="flex flex-wrap gap-3 max-sm:[&>a]:flex-1">
-              <Link to="/shop" className="btn btn-primary px-[22px] py-3">
-                Shop Now <ArrowRight size={16} />
-              </Link>
-              <Link
-                to="/deals"
-                className="btn border-white bg-transparent px-[22px] py-3 font-semibold text-white hover:bg-white hover:text-black"
-              >
-                View Deals
-              </Link>
+      <div className="page-container pt-4 sm:pt-6">
+        <section className="relative overflow-hidden rounded-2xl bg-linear-to-br from-primary-soft via-[#fff4e8] to-[#fde3cc]">
+          <div className="pointer-events-none absolute -top-24 -right-24 size-80 rounded-full bg-primary/10" aria-hidden="true" />
+          <div className="pointer-events-none absolute -bottom-32 left-1/3 size-72 rounded-full bg-white/50" aria-hidden="true" />
+          <div className="relative grid items-center gap-8 px-5 py-8 sm:px-10 sm:py-12 md:grid-cols-[1.05fr_1fr] lg:px-14 lg:py-14">
+            <div>
+              <span className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1.5 text-xs font-bold tracking-wide text-primary shadow-sm">
+                <Flame size={14} />
+                {maxDiscount > 0 ? `Mega Sale · Up to ${maxDiscount}% off top brands` : "Top brands, great deals"}
+              </span>
+              <h1 className="text-[34px] leading-[1.08] font-extrabold tracking-[-0.03em] text-ink xs:text-[40px] sm:text-[46px] lg:text-[56px]">
+                Everything
+                <br />
+                You Need,
+                <br />
+                <span className="text-primary">All in One Place</span>
+              </h1>
+              <p className="mt-4 mb-7 max-w-[440px] text-[15px] leading-relaxed text-muted">
+                Discover top brands, great deals, and a better shopping experience — with free shipping over ₹500 and
+                easy 7-day returns.
+              </p>
+              <div className="flex flex-wrap gap-3 max-sm:[&>a]:flex-1">
+                <Link to="/shop" className="btn btn-primary px-6 py-3 shadow-sm">
+                  Shop Now <ArrowRight size={16} />
+                </Link>
+                <Link to="/deals" className="btn btn-outline px-6 py-3 font-semibold">
+                  View Deals
+                </Link>
+              </div>
+              {categories.length > 0 && (
+                <div className="mt-7 flex flex-wrap gap-2">
+                  {categories.slice(0, 4).map((c) => (
+                    <Link
+                      key={c.slug}
+                      to={`/shop?category=${c.slug}`}
+                      className="rounded-full border border-primary/20 bg-white/70 px-3 py-1 text-xs font-medium text-ink hover:border-primary hover:text-primary"
+                    >
+                      {c.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-          <div className="absolute top-3 right-4 max-sm:tiny:hidden sm:relative sm:top-auto sm:right-auto sm:flex sm:items-center sm:justify-end">
-            <div className="relative sm:w-[230px] md:w-[260px] lg:w-[300px]">
-              {spotlight && (
+
+            {heroProducts.length > 0 && (
+              <div className="relative mx-auto w-full max-w-[400px] max-md:hidden md:mr-4">
                 <Link
-                  to={`/product/${spotlight.slug}`}
-                  className="hidden overflow-hidden rounded-2xl bg-surface text-ink shadow-menu transition-transform hover:-translate-y-1 sm:block"
+                  to={`/product/${heroProducts[0].slug}`}
+                  className="block overflow-hidden rounded-2xl bg-white text-ink shadow-menu transition-transform hover:-translate-y-1"
                 >
                   <span className="absolute top-3 left-3 z-[1] rounded-full bg-black px-2.5 py-1 text-[11px] font-bold text-white">
-                    Top rated deal
+                    Hot deal
                   </span>
                   <img
-                    src={spotlight.thumbnail}
-                    alt={spotlight.name}
-                    className="block aspect-[4/3] w-full bg-subtle object-cover"
+                    src={heroProducts[0].thumbnail}
+                    alt={heroProducts[0].name}
+                    className="block aspect-[5/4] w-full bg-white object-contain p-8"
                   />
-                  <div className="flex flex-col gap-1.5 px-4 pt-3.5 pb-4">
-                    <span className="leading-snug font-semibold">{spotlight.name}</span>
-                    <span className="inline-flex items-center gap-1 text-xs text-muted">
-                      <Star size={13} className="fill-primary text-primary" /> {spotlight.rating} ·{" "}
-                      {spotlight.reviewCount} reviews
-                    </span>
-                    <Price product={spotlight} size="sm" />
-                    <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-primary">
+                  <div className="flex items-end justify-between gap-3 border-t border-line px-5 py-4">
+                    <div className="min-w-0">
+                      <div className="truncate font-semibold">{heroProducts[0].name}</div>
+                      <Price product={heroProducts[0]} size="sm" />
+                    </div>
+                    <span className="inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold text-primary">
                       Shop now <ArrowRight size={14} />
                     </span>
                   </div>
                 </Link>
-              )}
-              {maxDiscount > 0 && (
-                <div
-                  className="z-[2] grid size-[72px] place-items-center content-center rounded-full border-[3px] border-white bg-primary text-[9px] leading-[1.1] font-bold text-white uppercase shadow-menu sm:absolute sm:-top-[26px] sm:-right-[18px] sm:size-[104px] sm:border-4 sm:text-[11px] lg:-top-[34px] lg:-right-[34px] lg:size-[132px]"
-                  aria-hidden="true"
-                >
-                  <span>Up to</span>
-                  <strong className="text-[19px] font-extrabold sm:text-[28px] lg:text-4xl">{maxDiscount}%</strong>
-                  <span>Off</span>
-                </div>
-              )}
-            </div>
+                {heroProducts.slice(1).map((p, i) => (
+                  <Link
+                    key={p.id}
+                    to={`/product/${p.slug}`}
+                    className={`absolute flex w-[200px] items-center gap-3 rounded-xl bg-white p-2.5 text-ink shadow-menu transition-transform hover:-translate-y-0.5 ${
+                      i === 0 ? "top-12 -left-8 lg:-left-14" : "top-[50%] -left-4 lg:-left-8"
+                    }`}
+                  >
+                    <img src={p.thumbnail} alt="" className="size-14 shrink-0 rounded-lg bg-subtle object-contain p-1" />
+                    <div className="min-w-0">
+                      <div className="truncate text-xs font-semibold">{p.name}</div>
+                      <div className="text-xs font-bold text-primary">{discountPercent(p)}% off</div>
+                    </div>
+                  </Link>
+                ))}
+                {maxDiscount > 0 && (
+                  <div
+                    className="absolute -top-7 -right-5 z-[2] grid size-[108px] place-items-center content-center rounded-full border-4 border-white bg-primary text-[11px] leading-[1.1] font-bold text-white uppercase shadow-menu lg:size-[120px]"
+                    aria-hidden="true"
+                  >
+                    <span>Up to</span>
+                    <strong className="text-[30px] font-extrabold lg:text-[34px]">{maxDiscount}%</strong>
+                    <span>Off</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
+        </section>
+        <div className="mt-4">
+          <FeatureStrip />
         </div>
-        <div className="page-container relative z-[1] order-2 pb-4 sm:pb-6">
-          <FeatureStrip hero />
-        </div>
-      </section>
+      </div>
 
       <div className="page-container">
         {status === "error" && (
@@ -173,8 +199,12 @@ const Home = () => {
                 to={`/shop?category=${c.slug}`}
                 className="group flex flex-col items-center gap-2.5 text-center text-xs font-medium text-ink sm:text-[13px]"
               >
-                <span className="grid size-14 place-items-center rounded-full border border-line bg-surface text-black transition group-hover:-translate-y-0.5 group-hover:border-primary group-hover:bg-primary-soft group-hover:text-primary xs:size-16 sm:size-[84px]">
-                  <CategoryIcon name={c.icon} />
+                <span className="grid size-16 place-items-center overflow-hidden rounded-full border border-line bg-subtle text-black transition group-hover:-translate-y-0.5 group-hover:border-primary group-hover:text-primary xs:size-[72px] sm:size-24">
+                  {c.image ? (
+                    <img src={c.image} alt="" loading="lazy" className="size-full bg-white object-contain p-2.5" />
+                  ) : (
+                    <CategoryIcon name={c.icon} />
+                  )}
                 </span>
                 <span>{c.name}</span>
               </Link>
