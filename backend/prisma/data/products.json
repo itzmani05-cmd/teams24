@@ -11,7 +11,13 @@
         "price": 74999,
         "discountPrice": 64999,
         "stock": 25,
-        "description": "6.2-inch Dynamic AMOLED 2X display, Exynos 2400 processor, 50MP triple camera and 4000mAh battery."
+        "description": "6.2-inch Dynamic AMOLED 2X display, Exynos 2400 processor, 50MP triple camera and 4000mAh battery.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/sam-s24-128-blk-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/sam-s24-128-blk-1.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/sam-s24-128-blk-2.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/sam-s24-128-blk-3.webp"
+        ]
       },
       {
         "name": "Apple iPhone 15 (128GB, Blue)",
@@ -20,7 +26,13 @@
         "price": 79900,
         "discountPrice": 71900,
         "stock": 18,
-        "description": "6.1-inch Super Retina XDR display, A16 Bionic chip, 48MP main camera and USB-C."
+        "description": "6.1-inch Super Retina XDR display, A16 Bionic chip, 48MP main camera and USB-C.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/apl-ip15-128-blu-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/apl-ip15-128-blu-1.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/apl-ip15-128-blu-2.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/apl-ip15-128-blu-3.webp"
+        ]
       },
       {
         "name": "boAt Rockerz 450 Bluetooth Headphones",
@@ -29,7 +41,11 @@
         "price": 3990,
         "discountPrice": 1499,
         "stock": 60,
-        "description": "On-ear wireless headphones with 40mm drivers, up to 15 hours playback and padded ear cushions."
+        "description": "On-ear wireless headphones with 40mm drivers, up to 15 hours playback and padded ear cushions.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/boat-rkz450-blk-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/boat-rkz450-blk-1.webp"
+        ]
       },
       {
         "name": "Sony WH-1000XM5 Noise Cancelling Headphones",
@@ -38,7 +54,11 @@
         "price": 34990,
         "discountPrice": 29990,
         "stock": 12,
-        "description": "Industry-leading noise cancellation, 30 hours battery life and crystal clear hands-free calling."
+        "description": "Industry-leading noise cancellation, 30 hours battery life and crystal clear hands-free calling.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/sony-wh1000xm5-blk-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/sony-wh1000xm5-blk-1.webp"
+        ]
       },
       {
         "name": "Mi Power Bank 3i 20000mAh",
@@ -47,7 +67,11 @@
         "price": 2199,
         "discountPrice": 1799,
         "stock": 80,
-        "description": "18W fast charging, dual USB output and USB-C input with 12-layer chip protection."
+        "description": "18W fast charging, dual USB output and USB-C input with 12-layer chip protection.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/mi-pb3i-20k-blk-1.jpg",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/mi-pb3i-20k-blk-1.jpg"
+        ]
       },
       {
         "name": "Noise ColorFit Pro 5 Smartwatch",
@@ -56,9 +80,16 @@
         "price": 6999,
         "discountPrice": 3999,
         "stock": 4,
-        "description": "1.85-inch AMOLED display, Bluetooth calling, 100+ sports modes and 7-day battery life."
+        "description": "1.85-inch AMOLED display, Bluetooth calling, 100+ sports modes and 7-day battery life.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/noise-cfp5-blk-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/noise-cfp5-blk-1.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/noise-cfp5-blk-2.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/noise-cfp5-blk-3.webp"
+        ]
       }
-    ]
+    ],
+    "imageUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/sony-wh1000xm5-blk-1.webp"
   },
   {
     "name": "Fashion",
@@ -72,7 +103,11 @@
         "price": 3299,
         "discountPrice": 2199,
         "stock": 40,
-        "description": "Slim fit stretch denim jeans in dark blue wash. Waist size 32."
+        "description": "Slim fit stretch denim jeans in dark blue wash. Waist size 32.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/levi-511-dblu-32-1.jpg",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/levi-511-dblu-32-1.jpg"
+        ]
       },
       {
         "name": "Allen Solly Men's Regular Fit Polo T-Shirt",
@@ -81,7 +116,13 @@
         "price": 1299,
         "discountPrice": 899,
         "stock": 55,
-        "description": "100% cotton pique polo with ribbed collar. Navy, size M."
+        "description": "100% cotton pique polo with ribbed collar. Navy, size M.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/as-polo-navy-m-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/as-polo-navy-m-1.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/as-polo-navy-m-2.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/as-polo-navy-m-3.webp"
+        ]
       },
       {
         "name": "Nike Revolution 7 Running Shoes",
@@ -90,7 +131,13 @@
         "price": 4195,
         "discountPrice": 3565,
         "stock": 20,
-        "description": "Lightweight running shoes with soft foam cushioning. Black, UK size 9."
+        "description": "Lightweight running shoes with soft foam cushioning. Black, UK size 9.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/nike-rev7-blk-09-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/nike-rev7-blk-09-1.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/nike-rev7-blk-09-2.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/nike-rev7-blk-09-3.webp"
+        ]
       },
       {
         "name": "Biba Women's Cotton Straight Kurta",
@@ -99,7 +146,11 @@
         "price": 1999,
         "discountPrice": 1399,
         "stock": 30,
-        "description": "Printed cotton straight kurta with three-quarter sleeves. Maroon, size M."
+        "description": "Printed cotton straight kurta with three-quarter sleeves. Maroon, size M.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/biba-krt-mar-m-1.jpg",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/biba-krt-mar-m-1.jpg"
+        ]
       },
       {
         "name": "Fastrack Unisex Aviator Sunglasses",
@@ -108,9 +159,16 @@
         "price": 1499,
         "discountPrice": null,
         "stock": 0,
-        "description": "UV-protected aviator sunglasses with gold metal frame."
+        "description": "UV-protected aviator sunglasses with gold metal frame.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/ft-avi-gld-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/ft-avi-gld-1.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/ft-avi-gld-2.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/ft-avi-gld-3.webp"
+        ]
       }
-    ]
+    ],
+    "imageUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/nike-rev7-blk-09-1.webp"
   },
   {
     "name": "Home & Kitchen",
@@ -124,7 +182,11 @@
         "price": 2895,
         "discountPrice": 1999,
         "stock": 35,
-        "description": "Aluminium outer-lid pressure cooker with deep lid for spillage control."
+        "description": "Aluminium outer-lid pressure cooker with deep lid for spillage control.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/prst-svch-5l-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/prst-svch-5l-1.webp"
+        ]
       },
       {
         "name": "Philips HL7756 Mixer Grinder 750W",
@@ -133,7 +195,13 @@
         "price": 6295,
         "discountPrice": 3899,
         "stock": 15,
-        "description": "750W motor with 3 stainless steel jars and 5-year warranty on motor."
+        "description": "750W motor with 3 stainless steel jars and 5-year warranty on motor.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/phl-hl7756-750w-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/phl-hl7756-750w-1.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/phl-hl7756-750w-2.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/phl-hl7756-750w-3.webp"
+        ]
       },
       {
         "name": "Milton Thermosteel Flask 1L",
@@ -142,7 +210,11 @@
         "price": 1265,
         "discountPrice": 899,
         "stock": 70,
-        "description": "Vacuum insulated stainless steel flask, keeps drinks hot or cold for 24 hours."
+        "description": "Vacuum insulated stainless steel flask, keeps drinks hot or cold for 24 hours.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/mlt-thrm-1l-slv-1.jpg",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/mlt-thrm-1l-slv-1.jpg"
+        ]
       },
       {
         "name": "Pigeon Non-Stick Cookware Set (3 Pieces)",
@@ -151,7 +223,12 @@
         "price": 2495,
         "discountPrice": 1349,
         "stock": 3,
-        "description": "Includes fry pan, kadai with lid and tawa. Induction and gas stove compatible."
+        "description": "Includes fry pan, kadai with lid and tawa. Induction and gas stove compatible.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/pgn-ns-set3-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/pgn-ns-set3-1.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/pgn-ns-set3-2.webp"
+        ]
       },
       {
         "name": "Solimo Microfibre Bedsheet Set (Double)",
@@ -160,9 +237,16 @@
         "price": 1199,
         "discountPrice": 649,
         "stock": 45,
-        "description": "Double bedsheet with two pillow covers, soft microfibre fabric in blue."
+        "description": "Double bedsheet with two pillow covers, soft microfibre fabric in blue.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/slm-bed-dbl-blu-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/slm-bed-dbl-blu-1.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/slm-bed-dbl-blu-2.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/slm-bed-dbl-blu-3.webp"
+        ]
       }
-    ]
+    ],
+    "imageUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/phl-hl7756-750w-1.webp"
   },
   {
     "name": "Books",
@@ -176,7 +260,11 @@
         "price": 799,
         "discountPrice": 499,
         "stock": 100,
-        "description": "An easy and proven way to build good habits and break bad ones. Paperback."
+        "description": "An easy and proven way to build good habits and break bad ones. Paperback.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/bk-atomic-habits-pb-1.jpg",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/bk-atomic-habits-pb-1.jpg"
+        ]
       },
       {
         "name": "The Psychology of Money by Morgan Housel",
@@ -185,7 +273,11 @@
         "price": 399,
         "discountPrice": 299,
         "stock": 90,
-        "description": "Timeless lessons on wealth, greed and happiness. Paperback."
+        "description": "Timeless lessons on wealth, greed and happiness. Paperback.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/bk-psy-money-pb-1.jpg",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/bk-psy-money-pb-1.jpg"
+        ]
       },
       {
         "name": "Wings of Fire by A.P.J. Abdul Kalam",
@@ -194,7 +286,11 @@
         "price": 350,
         "discountPrice": 275,
         "stock": 65,
-        "description": "The autobiography of Dr. A.P.J. Abdul Kalam. Paperback."
+        "description": "The autobiography of Dr. A.P.J. Abdul Kalam. Paperback.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/bk-wings-fire-pb-1.jpg",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/bk-wings-fire-pb-1.jpg"
+        ]
       },
       {
         "name": "Clean Code by Robert C. Martin",
@@ -203,9 +299,14 @@
         "price": 899,
         "discountPrice": 749,
         "stock": 2,
-        "description": "A handbook of agile software craftsmanship. Paperback."
+        "description": "A handbook of agile software craftsmanship. Paperback.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/bk-clean-code-pb-1.jpg",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/bk-clean-code-pb-1.jpg"
+        ]
       }
-    ]
+    ],
+    "imageUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/bk-atomic-habits-pb-1.jpg"
   },
   {
     "name": "Beauty & Personal Care",
@@ -219,7 +320,13 @@
         "price": 349,
         "discountPrice": 279,
         "stock": 120,
-        "description": "Face wash with vitamin C and turmeric for skin illumination."
+        "description": "Face wash with vitamin C and turmeric for skin illumination.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/mama-vitc-fw-100-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/mama-vitc-fw-100-1.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/mama-vitc-fw-100-2.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/mama-vitc-fw-100-3.webp"
+        ]
       },
       {
         "name": "Philips BT1232 Beard Trimmer",
@@ -228,7 +335,11 @@
         "price": 1395,
         "discountPrice": 1099,
         "stock": 28,
-        "description": "Cordless trimmer with 18 length settings and 30 minutes runtime."
+        "description": "Cordless trimmer with 18 length settings and 30 minutes runtime.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/phl-bt1232-1.jpg",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/phl-bt1232-1.jpg"
+        ]
       },
       {
         "name": "Nivea Soft Light Moisturising Cream 100ml",
@@ -237,7 +348,13 @@
         "price": 299,
         "discountPrice": null,
         "stock": 150,
-        "description": "Light moisturiser with jojoba oil and vitamin E for face, hands and body."
+        "description": "Light moisturiser with jojoba oil and vitamin E for face, hands and body.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/niv-soft-100-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/niv-soft-100-1.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/niv-soft-100-2.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/niv-soft-100-3.webp"
+        ]
       },
       {
         "name": "Dove Intense Repair Shampoo 650ml",
@@ -246,9 +363,16 @@
         "price": 699,
         "discountPrice": 525,
         "stock": 75,
-        "description": "Shampoo with keratin repair actives for damaged hair."
+        "description": "Shampoo with keratin repair actives for damaged hair.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/dove-ir-sh-650-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/dove-ir-sh-650-1.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/dove-ir-sh-650-2.webp",
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/dove-ir-sh-650-3.webp"
+        ]
       }
-    ]
+    ],
+    "imageUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/niv-soft-100-1.webp"
   },
   {
     "name": "Sports & Fitness",
@@ -262,7 +386,11 @@
         "price": 999,
         "discountPrice": 499,
         "stock": 50,
-        "description": "Anti-slip EVA yoga mat with carry strap. Purple, 6mm thick."
+        "description": "Anti-slip EVA yoga mat with carry strap. Purple, 6mm thick.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/bf-yoga-6mm-pur-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/bf-yoga-6mm-pur-1.webp"
+        ]
       },
       {
         "name": "Cosco Hi-Bounce Football (Size 5)",
@@ -271,7 +399,11 @@
         "price": 899,
         "discountPrice": 649,
         "stock": 40,
-        "description": "Machine-stitched rubberised football for outdoor play. Size 5."
+        "description": "Machine-stitched rubberised football for outdoor play. Size 5.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/cos-fb-hb-s5-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/cos-fb-hb-s5-1.webp"
+        ]
       },
       {
         "name": "SS Kashmir Willow Cricket Bat",
@@ -280,7 +412,11 @@
         "price": 2499,
         "discountPrice": 1899,
         "stock": 15,
-        "description": "Kashmir willow bat with cane handle for leather and tennis ball. Short handle."
+        "description": "Kashmir willow bat with cane handle for leather and tennis ball. Short handle.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/ss-kw-bat-sh-1.webp",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/ss-kw-bat-sh-1.webp"
+        ]
       },
       {
         "name": "Kore PVC Dumbbell Set 10kg",
@@ -289,8 +425,13 @@
         "price": 1999,
         "discountPrice": 1199,
         "stock": 22,
-        "description": "Home gym set with PVC plates, two dumbbell rods and locks. Total 10kg."
+        "description": "Home gym set with PVC plates, two dumbbell rods and locks. Total 10kg.",
+        "thumbnailUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/kore-db-pvc-10kg-1.jpg",
+        "images": [
+          "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/kore-db-pvc-10kg-1.jpg"
+        ]
       }
-    ]
+    ],
+    "imageUrl": "https://cyqyrmyfplokopuqguos.supabase.co/storage/v1/object/public/product-images/catalog/cos-fb-hb-s5-1.webp"
   }
 ]
